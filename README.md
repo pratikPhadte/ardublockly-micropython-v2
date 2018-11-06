@@ -1,3 +1,6 @@
+# Ardublockly ESP8266/ESP32 Micropython Fork
+Server not ready yet. Run ardublockly/index.html and take a look at Micropython Code tab!
+
 # Ardublockly
 Ardublockly is a visual programming editor for Arduino. It is based on Google's [Blockly][1], which has been forked to generate [Arduino][15] code.
 
