@@ -32,6 +32,69 @@ Ardublockly.init = function () {
         console.log('Offline app modal opened as non localhost host name found: ' +
             document.location.hostname)
     }
+
+    //Load od blink sketch
+
+    var blink_xml =
+        '<xml xmlns="http://www.w3.org/1999/xhtml">' +
+        '  <block type="controls_whileUntil" id=";z@~=R{V)03:r.ppa2j^" x="82" y="149">' +
+        '    <field name="MODE">WHILE</field>' +
+        '    <value name="BOOL">' +
+        '      <block type="logic_boolean" id="cx,YcM+(%Q;ehV!}zUHx">' +
+        '        <field name="BOOL">TRUE</field>' +
+        '      </block>' +
+        '    </value>' +
+        '    <statement name="DO">' +
+        '      <block type="io_builtin_led" id=")=gtevqY=L3)_YCT!jTi">' +
+        '        <field name="BUILT_IN_LED">13</field>' +
+        '        <value name="STATE">' +
+        '          <block type="io_highlow" id=")CKAHa9Oo}9~tQbA)9IC">' +
+        '            <field name="STATE">HIGH</field>' +
+        '          </block>' +
+        '        </value>' +
+        '        <next>' +
+        '          <block type="time_delay" id="u]*N!uyMk%Od7{p*)ql)">' +
+        '            <value name="DELAY_TIME_MILI">' +
+        '              <block type="math_number" id="Y?V=NQ,Vj.DbB},CxQlG">' +
+        '                <field name="NUM">1000</field>' +
+        '              </block>' +
+        '            </value>' +
+        '            <next>' +
+        '              <block type="io_builtin_led" id="I]=@~6@o(ESzUI^QVo*W">' +
+        '                <field name="BUILT_IN_LED">13</field>' +
+        '                <value name="STATE">' +
+        '                  <block type="io_highlow" id="]Lg6WPR^7H]r`cU7[3x*">' +
+        '                    <field name="STATE">LOW</field>' +
+        '                  </block>' +
+        '                </value>' +
+        '                <next>' +
+        '                  <block type="time_delay" id="HxiFT~IMcuBYw6EsW!}f">' +
+        '                    <value name="DELAY_TIME_MILI">' +
+        '                      <block type="math_number" id="MA+b|MQ~]4I:jvQ0^eR1">' +
+        '                        <field name="NUM">1000</field>' +
+        '                      </block>' +
+        '                    </value>' +
+        '                  </block>' +
+        '                </next>' +
+        '              </block>' +
+        '            </next>' +
+        '          </block>' +
+        '        </next>' +
+        '      </block>' +
+        '    </statement>' +
+        '  </block>' +
+        '</xml>';
+
+    var success = Ardublockly.replaceBlocksfromXml(blink_xml);
+    if (success) {
+        Ardublockly.renderContent();
+        Ardublockly.sketchNameSet("Blink example");
+    } else {
+        Ardublockly.alertMessage(
+            Ardublockly.getLocalStr('invalidXmlTitle'),
+            Ardublockly.getLocalStr('invalidXmlBody'),
+            false);
+    }
 };
 
 /** Binds functions to each of the buttons, nav links, and related. */
@@ -553,6 +616,13 @@ Ardublockly.XmlTextareaToBlocks = function () {
 Ardublockly.PREV_ARDUINO_CODE_ = 'void setup() {\n\n}\n\n\nvoid loop() {\n\n}';
 
 /**
+ * Private variable to save the previous version of the Micropython Code.
+ * @type {!String}
+ * @private
+ */
+Ardublockly.PREV_MICROPYTHON_CODE_ = '';
+
+/**
  * Populate the Arduino Code and Blocks XML panels with content generated from
  * the blocks.
  */
@@ -577,6 +647,28 @@ Ardublockly.renderContent = function () {
         document.getElementById('content_arduino').innerHTML =
             prettyPrintOne(resultStringArray.join(''), 'cpp', false);
         Ardublockly.PREV_ARDUINO_CODE_ = arduinoCode;
+    }
+
+    // Render MicroPython Code with latest change highlight and syntax highlighting
+    var micropythonCode = Ardublockly.generateMicropython();
+    if (micropythonCode !== Ardublockly.PREV_MICROPYTHON_CODE_) {
+        var diff = JsDiff.diffWords(Ardublockly.PREV_MICROPYTHON_CODE_, micropythonCode);
+        var resultStringArray = [];
+        for (var i = 0; i < diff.length; i++) {
+            if (!diff[i].removed) {
+                var escapedCode = diff[i].value.replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+                if (diff[i].added) {
+                    resultStringArray.push(
+                        '<span class="code_highlight_new">' + escapedCode + '</span>');
+                } else {
+                    resultStringArray.push(escapedCode);
+                }
+            }
+        }
+        document.getElementById('content_micropython').innerHTML =
+            prettyPrintOne(resultStringArray.join(''), 'python', false);
+        Ardublockly.PREV_MICROPYTHON_CODE_ = micropythonCode;
     }
 
     // Generate plain XML into element

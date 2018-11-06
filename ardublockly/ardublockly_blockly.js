@@ -78,6 +78,11 @@ Ardublockly.generateArduino = function () {
     return Blockly.Arduino.workspaceToCode(Ardublockly.workspace);
 };
 
+/** @return {!string} Generated Micropython code from the Blockly workspace. */
+Ardublockly.generateMicropython = function () {
+    return Blockly.Micropython.workspaceToCode(Ardublockly.workspace);
+};
+
 /** @return {!string} Generated XML code from the Blockly workspace. */
 Ardublockly.generateXml = function () {
     var xmlDom = Blockly.Xml.workspaceToDom(Ardublockly.workspace);
