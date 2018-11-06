@@ -108,7 +108,7 @@ ul.side-nav li.side-menu-end {
 }
 
 /************************************/
-/*  Blocks, Arduino, and XML areas  */
+/*  Blocks, Arduino, MicroPython and XML areas  */
 /************************************/
 .content {
   margin: 0;
@@ -191,6 +191,24 @@ ul.side-nav li.side-menu-end {
   user-select: text;
   min-height: 388px;
 }
+
+/* The materialize framework changes height of the div to show or hide */
+/* the collapsible elements. */
+#content_micropython {
+    resize: none;
+    outline: none;
+    border: none;
+    padding: 0px 5px;
+    font-size: 0.9rem;
+    font-family: "Droid Sans Mono", monospace;
+    overflow: auto;
+    -moz-user-select: text;
+    -khtml-user-select: text;
+    -webkit-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+    min-height: 388px;
+}
 .content_arduino_large {
   height: -moz-calc(100vh - 280px);     /* Firefox  */
   height: -webkit-calc(100vh - 280px);  /* WebKit   */
@@ -202,6 +220,20 @@ ul.side-nav li.side-menu-end {
   height: -webkit-calc(100vh - 440px);  /* WebKit   */
   height: -o-calc(100vh - 440px);       /* Opera    */
   height: calc(100vh - 440px);          /* Standard */
+}
+
+.content_micropython_large {
+    height: -moz-calc(100vh - 280px); /* Firefox  */
+    height: -webkit-calc(100vh - 280px); /* WebKit   */
+    height: -o-calc(100vh - 280px); /* Opera    */
+    height: calc(100vh - 280px); /* Standard */
+}
+
+.content_micropython_small {
+    height: -moz-calc(100vh - 440px); /* Firefox  */
+    height: -webkit-calc(100vh - 440px); /* WebKit   */
+    height: -o-calc(100vh - 440px); /* Opera    */
+    height: calc(100vh - 440px); /* Standard */
 }
 
 /****************/

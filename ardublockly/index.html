@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+﻿<!DOCTYPE HTML>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -170,27 +170,36 @@
         </div>
       </div>
       <div class="col s12 m12 l4">
-        <ul class="collapsible z-depth-1" data-collapsible="accordion">
-          <li>
-            <div class="collapsible-header active">
-              <span class="collapsible_logo">{ }</span>
-              <span class="translatable_arduinoSourceCode">Arduino Source Code</span>
-            </div>
-            <div class="collapsible-body">
-              <pre id="content_arduino" class="content content_height_transition content_arduino_large"></pre>
-            </div>
-          </li>
-          <li>
-            <div class="collapsible-header" id="xml_collapsible_header">
-              <span class="collapsible_logo">&#60; &#62;</span>
-              <span class="translatable_blocksXml">Blocks XML</span>
-            </div>
-            <div class="collapsible-body" style="position:relative" id="xml_collapsible_body">
-              <a class="btn-floating btn-large waves-effect waves-light arduino_teal z-depth-1-half" id="button_load_xml"><i class="mdi-action-extension"></i></a>
-              <textarea id="content_xml" class="content content_height_transition content_xml_large" wrap="soft"></textarea>
-            </div>
-          </li>
-        </ul>
+          <ul class="collapsible z-depth-1" data-collapsible="accordion">
+              <li>
+                  <div class="collapsible-header active">
+                      <span class="collapsible_logo">( )</span>
+                      <span class="translatable_micropythonSourceCode">MicroPython Source Code</span>
+                  </div>
+                  <div class="collapsible-body">
+                      <pre id="content_micropython" class="content content_height_transition content_micropython_large"></pre>
+                  </div>
+              </li>
+              <li>
+                  <div class="collapsible-header">
+                      <span class="collapsible_logo">{ }</span>
+                      <span class="translatable_arduinoSourceCode">Arduino Source Code</span>
+                  </div>
+                  <div class="collapsible-body">
+                      <pre id="content_arduino" class="content content_height_transition content_arduino_large"></pre>
+                  </div>
+              </li>
+              <li>
+                  <div class="collapsible-header" id="xml_collapsible_header">
+                      <span class="collapsible_logo">&#60; &#62;</span>
+                      <span class="translatable_blocksXml">Blocks XML</span>
+                  </div>
+                  <div class="collapsible-body" style="position:relative" id="xml_collapsible_body">
+                      <a class="btn-floating btn-large waves-effect waves-light arduino_teal z-depth-1-half" id="button_load_xml"><i class="mdi-action-extension"></i></a>
+                      <textarea id="content_xml" class="content content_height_transition content_xml_large" wrap="soft"></textarea>
+                  </div>
+              </li>
+          </ul>
       </div>
     </div>
   </div>
