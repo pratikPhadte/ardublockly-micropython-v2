@@ -14,8 +14,8 @@ var ArdublocklyServer = {};
  * @param {!string} url Location for the JSON data.
  * @param {!function} jsonDataCb Callback with JSON object or null for error.
  */
-ArdublocklyServer.getJson = function(url, callback) {
-  ArdublocklyServer.sendRequest(url, 'GET', 'application/json', null, callback);
+ArdublocklyServer.getJson = function (url, callback) {
+    ArdublocklyServer.sendRequest(url, 'GET', 'application/json', null, callback);
 };
 
 /**
@@ -24,8 +24,8 @@ ArdublocklyServer.getJson = function(url, callback) {
  * @param {!string} json JSON string.
  * @param {!function} callback Request callback function.
  */
-ArdublocklyServer.putJson = function(url, json, callback) {
-  ArdublocklyServer.sendRequest(url, 'PUT', 'application/json', json, callback);
+ArdublocklyServer.putJson = function (url, json, callback) {
+    ArdublocklyServer.sendRequest(url, 'PUT', 'application/json', json, callback);
 };
 
 /**
@@ -37,66 +37,66 @@ ArdublocklyServer.putJson = function(url, json, callback) {
  * @param {!function} cb Request callback function, takes a single input for a
  *     parsed JSON object.
  */
-ArdublocklyServer.sendRequest = function(
+ArdublocklyServer.sendRequest = function (
     url, method, contentType, jsonObjSend, cb) {
-  var request = ArdublocklyServer.createRequest();
+    var request = ArdublocklyServer.createRequest();
 
-  // The data received is JSON, so it needs to be converted into the right
-  // format to be displayed in the page.
-  var onReady = function() {
-    if (request.readyState == 4) {
-      if (request.status == 200) {
-        var jsonObjReceived = null;
-        try {
-          jsonObjReceived = JSON.parse(request.responseText);
-        } catch(e) {
-          console.error('Incorrectly formatted JSON data from ' + url);
-          throw e;
+    // The data received is JSON, so it needs to be converted into the right
+    // format to be displayed in the page.
+    var onReady = function () {
+        if (request.readyState == 4) {
+            if (request.status == 200) {
+                var jsonObjReceived = null;
+                try {
+                    jsonObjReceived = JSON.parse(request.responseText);
+                } catch (e) {
+                    console.error('Incorrectly formatted JSON data from ' + url);
+                    throw e;
+                }
+                cb(jsonObjReceived);
+            } else {
+                // return a null element which will be dealt with in the front end
+                cb(null);
+            }
         }
-        cb(jsonObjReceived);
-      } else {
-        // return a null element which will be dealt with in the front end
-        cb(null);
-      }
-    }
-  };
+    };
 
-  try {
-    request.open(method, url, true);
-    request.setRequestHeader('Content-type', contentType);
-    request.onreadystatechange = onReady;
-    request.send(JSON.stringify(jsonObjSend));
-  } catch (e) {
-    // Nullify callback to indicate error
-    cb(null);
-    throw e;
-  }
+    try {
+        request.open(method, url, true);
+        request.setRequestHeader('Content-type', contentType);
+        request.onreadystatechange = onReady;
+        request.send(JSON.stringify(jsonObjSend));
+    } catch (e) {
+        // Nullify callback to indicate error
+        cb(null);
+        throw e;
+    }
 };
 
 /** @return {XMLHttpRequest} An XML HTTP Request multi-browser compatible. */
-ArdublocklyServer.createRequest = function() {
-  var request = null;
-  try {
-    // Firefox, Chrome, IE7+, Opera, Safari
-    request = new XMLHttpRequest();
-  }
-  catch (e) {
-    // IE6 and earlier
+ArdublocklyServer.createRequest = function () {
+    var request = null;
     try {
-      request = new ActiveXObject('Msxml2.XMLHTTP');
+        // Firefox, Chrome, IE7+, Opera, Safari
+        request = new XMLHttpRequest();
     }
     catch (e) {
-      try {
-        request = new ActiveXObject('Microsoft.XMLHTTP');
-      }
-      catch (e) {
-        throw 'Your browser does not support AJAX. You will not be able to' +
-              'use all of Ardublockly features.';
-        request = null;
-      }
+        // IE6 and earlier
+        try {
+            request = new ActiveXObject('Msxml2.XMLHTTP');
+        }
+        catch (e) {
+            try {
+                request = new ActiveXObject('Microsoft.XMLHTTP');
+            }
+            catch (e) {
+                throw 'Your browser does not support AJAX. You will not be able to' +
+                'use all of Ardublockly features.';
+                request = null;
+            }
+        }
     }
-  }
-  return request;
+    return request;
 };
 
 /**
@@ -105,113 +105,113 @@ ArdublocklyServer.createRequest = function() {
  * @return {!element} An HTML element, which type depends on the JSON 'element'
  *                    key (currently only text input or drop down).
  */
-ArdublocklyServer.jsonToIdeModal = function(jsonObj) {
-  if (!jsonObj) return null;
+ArdublocklyServer.jsonToIdeModal = function (jsonObj) {
+    if (!jsonObj) return null;
 
-  var elTitle = document.createElement('h4');
-  elTitle.className = (jsonObj && jsonObj.success) ? 'arduino_dialog_success' :
-                                                     'arduino_dialog_failure';
-  var elStdOp = document.createElement('span');
-  elStdOp.className = 'arduino_dialog_out';
-  var elErrOp = document.createElement('span');
-  elErrOp.className = 'arduino_dialog_out_error';
+    var elTitle = document.createElement('h4');
+    elTitle.className = (jsonObj && jsonObj.success) ? 'arduino_dialog_success' :
+        'arduino_dialog_failure';
+    var elStdOp = document.createElement('span');
+    elStdOp.className = 'arduino_dialog_out';
+    var elErrOp = document.createElement('span');
+    elErrOp.className = 'arduino_dialog_out_error';
 
-  // Add the Standard and Error outputs
-  var ideData = jsonObj.ide_data;
-  if (ideData && (ideData.std_output !== undefined) && 
-      (ideData.err_output !== undefined)) {
-    elStdOp.innerHTML = ideData.std_output.split('\n').join('<br />');
-    elErrOp.innerHTML = ideData.err_output.split('\n').join('<br />');
-  } else {
-    console.error(jsonObj);
-    console.error('The IDE out JSON response does not have valid "ide_data".');
-  }
-
-  if (jsonObj.errors) {
-    // Prepare error message
-    elTitle.innerHTML = Ardublockly.getLocalStr('arduinoOpErrorTitle');
-    var errStr = [];
-    for (var i = 0; i < jsonObj.errors.length; i++) {
-      var errorContext = 'Unrecognised error.';
-      try {
-        errorContext = Ardublockly.getLocalStr(
-            'arduinoOpErrorIdContext_' + jsonObj.errors[i].id);
-      } catch (e) {
-        // Swallow the exception, could be expanded to try to figure out issue
-      }
-      errStr.push('\nError id ' + jsonObj.errors[i].id + ': ' + errorContext);
-    }
-    elErrOp.innerHTML += '<br />' + errStr.join('<br />');
-  } else if (jsonObj.success && jsonObj.ide_mode) {
-    // Format a successful response
-    if (jsonObj.ide_mode == 'upload') {
-      elTitle.innerHTML = Ardublockly.getLocalStr('arduinoOpUploadedTitle');
-    } else if (jsonObj.ide_mode == 'verify') {
-      elTitle.innerHTML = Ardublockly.getLocalStr('arduinoOpVerifiedTitle');
-    } else if (jsonObj.ide_mode == 'open') {
-      elTitle.innerHTML = Ardublockly.getLocalStr('arduinoOpOpenedTitle');
-      // This is a corner case where we also add to the stand out
-      elStdOp.innerHTML += Ardublockly.getLocalStr('arduinoOpOpenedBody');
+    // Add the Standard and Error outputs
+    var ideData = jsonObj.ide_data;
+    if (ideData && (ideData.std_output !== undefined) &&
+        (ideData.err_output !== undefined)) {
+        elStdOp.innerHTML = ideData.std_output.split('\n').join('<br />');
+        elErrOp.innerHTML = ideData.err_output.split('\n').join('<br />');
     } else {
-      elTitle.innerHTML = Ardublockly.getLocalStr('arduinoOpErrorTitle');
+        console.error(jsonObj);
+        console.error('The IDE out JSON response does not have valid "ide_data".');
     }
-  } else {
-    console.error(jsonObj);
-    console.error('Unexpected response format, printed above.');
-  }
 
-  var element = document.createElement('div');
-  element.appendChild(elTitle);
-  element.appendChild(elStdOp);
-  element.appendChild(elErrOp);
-  return element;
-};
-
-ArdublocklyServer.jsonToHtmlTextInput = function(jsonObj) {
-  var element = null;
-  if (jsonObj) {
-    // Simple text input
-    element = document.createElement('input');
-    element.setAttribute('type', 'text');
-    element.style.cssText = '';
     if (jsonObj.errors) {
-      element.setAttribute('value', '');
-      element.style.cssText = 'border-bottom: 1px solid #f75c51;' +
-                              'box-shadow: 0 1px 0 0 #d73c30;';
+        // Prepare error message
+        elTitle.innerHTML = Ardublockly.getLocalStr('arduinoOpErrorTitle');
+        var errStr = [];
+        for (var i = 0; i < jsonObj.errors.length; i++) {
+            var errorContext = 'Unrecognised error.';
+            try {
+                errorContext = Ardublockly.getLocalStr(
+                    'arduinoOpErrorIdContext_' + jsonObj.errors[i].id);
+            } catch (e) {
+                // Swallow the exception, could be expanded to try to figure out issue
+            }
+            errStr.push('\nError id ' + jsonObj.errors[i].id + ': ' + errorContext);
+        }
+        elErrOp.innerHTML += '<br />' + errStr.join('<br />');
+    } else if (jsonObj.success && jsonObj.ide_mode) {
+        // Format a successful response
+        if (jsonObj.ide_mode == 'upload') {
+            elTitle.innerHTML = Ardublockly.getLocalStr('arduinoOpUploadedTitle');
+        } else if (jsonObj.ide_mode == 'verify') {
+            elTitle.innerHTML = Ardublockly.getLocalStr('arduinoOpVerifiedTitle');
+        } else if (jsonObj.ide_mode == 'open') {
+            elTitle.innerHTML = Ardublockly.getLocalStr('arduinoOpOpenedTitle');
+            // This is a corner case where we also add to the stand out
+            elStdOp.innerHTML += Ardublockly.getLocalStr('arduinoOpOpenedBody');
+        } else {
+            elTitle.innerHTML = Ardublockly.getLocalStr('arduinoOpErrorTitle');
+        }
     } else {
-      element.setAttribute('value', jsonObj.selected || '');
+        console.error(jsonObj);
+        console.error('Unexpected response format, printed above.');
     }
-  }
-  return element;
+
+    var element = document.createElement('div');
+    element.appendChild(elTitle);
+    element.appendChild(elStdOp);
+    element.appendChild(elErrOp);
+    return element;
 };
 
-ArdublocklyServer.jsonToHtmlDropdown = function(jsonObj) {
-  var element = null;
-  if (!jsonObj) {
-    console.error('Invalid JSON received from server.');
-  } else if(jsonObj.errors) {
-    console.error('There are errors in the JSON response from server.');
-    console.error(jsonObj);
-  } else {
-    // Drop down list of unknown length with a selected item
-    element = document.createElement('select');
-    element.name = jsonObj.settings_type;
-    for (var i = 0; i < jsonObj.options.length; i++) {
-      if (jsonObj.options[i].value && jsonObj.options[i].display_text) {
-        var option = document.createElement('option');
-        option.value = jsonObj.options[i].value;
-        option.text = jsonObj.options[i].display_text;
-        // Check selected option and mark it
-        if (jsonObj.selected) {
-          option.selected = jsonObj.options[i].value == jsonObj.selected;
+ArdublocklyServer.jsonToHtmlTextInput = function (jsonObj) {
+    var element = null;
+    if (jsonObj) {
+        // Simple text input
+        element = document.createElement('input');
+        element.setAttribute('type', 'text');
+        element.style.cssText = '';
+        if (jsonObj.errors) {
+            element.setAttribute('value', '');
+            element.style.cssText = 'border-bottom: 1px solid #f75c51;' +
+                'box-shadow: 0 1px 0 0 #d73c30;';
+        } else {
+            element.setAttribute('value', jsonObj.selected || '');
         }
-        element.appendChild(option);
-      } else {
-        console.error('Missing required JSON keys for Drop Down conversion.');
-      }
     }
-  }
-  return element;
+    return element;
+};
+
+ArdublocklyServer.jsonToHtmlDropdown = function (jsonObj) {
+    var element = null;
+    if (!jsonObj) {
+        console.error('Invalid JSON received from server.');
+    } else if (jsonObj.errors) {
+        console.error('There are errors in the JSON response from server.');
+        console.error(jsonObj);
+    } else {
+        // Drop down list of unknown length with a selected item
+        element = document.createElement('select');
+        element.name = jsonObj.settings_type;
+        for (var i = 0; i < jsonObj.options.length; i++) {
+            if (jsonObj.options[i].value && jsonObj.options[i].display_text) {
+                var option = document.createElement('option');
+                option.value = jsonObj.options[i].value;
+                option.text = jsonObj.options[i].display_text;
+                // Check selected option and mark it
+                if (jsonObj.selected) {
+                    option.selected = jsonObj.options[i].value == jsonObj.selected;
+                }
+                element.appendChild(option);
+            } else {
+                console.error('Missing required JSON keys for Drop Down conversion.');
+            }
+        }
+    }
+    return element;
 };
 
 /**
@@ -219,8 +219,8 @@ ArdublocklyServer.jsonToHtmlDropdown = function(jsonObj) {
  * @param {!function} callback Callback function for the server request, must
  *     have one argument to receive the JSON response.
  */
-ArdublocklyServer.requestCompilerLocation = function(callback) {
-  ArdublocklyServer.getJson('/settings/compiler', callback);
+ArdublocklyServer.requestCompilerLocation = function (callback) {
+    ArdublocklyServer.getJson('/settings/compiler', callback);
 };
 
 /**
@@ -229,9 +229,9 @@ ArdublocklyServer.requestCompilerLocation = function(callback) {
  * @param {!function} callback Callback function for the server request, must
  *     have one argument to receive the JSON response.
  */
-ArdublocklyServer.setCompilerLocation = function(new_path, callback) {
+ArdublocklyServer.setCompilerLocation = function (new_path, callback) {
     ArdublocklyServer.putJson(
-      '/settings/compiler', {"new_value": new_path}, callback);
+        '/settings/compiler', { "new_value": new_path }, callback);
 };
 
 /**
@@ -239,8 +239,8 @@ ArdublocklyServer.setCompilerLocation = function(new_path, callback) {
  * @param {!function} callback Callback function for the server request, must
  *     have one argument to receive the JSON response.
  */
-ArdublocklyServer.requestSketchLocation = function(callback) {
-   ArdublocklyServer.getJson('/settings/sketch', callback);
+ArdublocklyServer.requestSketchLocation = function (callback) {
+    ArdublocklyServer.getJson('/settings/sketch', callback);
 };
 
 /**
@@ -249,9 +249,9 @@ ArdublocklyServer.requestSketchLocation = function(callback) {
  * @param {!function} callback Callback function for the server request, must
  *     have one argument to receive the JSON response.
  */
-ArdublocklyServer.setSketchLocation = function(new_path, callback) {
-  ArdublocklyServer.putJson(
-      '/settings/sketch', {"new_value": new_path}, callback);
+ArdublocklyServer.setSketchLocation = function (new_path, callback) {
+    ArdublocklyServer.putJson(
+        '/settings/sketch', { "new_value": new_path }, callback);
 };
 
 /**
@@ -262,8 +262,8 @@ ArdublocklyServer.setSketchLocation = function(new_path, callback) {
  * @param {!function} callback Callback function for the server request, must
  *     have one argument to receive the JSON response.
  */
-ArdublocklyServer.requestArduinoBoards = function(callback) {
-  ArdublocklyServer.getJson('/settings/board', callback);
+ArdublocklyServer.requestArduinoBoards = function (callback) {
+    ArdublocklyServer.getJson('/settings/board', callback);
 };
 
 /**
@@ -274,9 +274,9 @@ ArdublocklyServer.requestArduinoBoards = function(callback) {
  * @param {!function} callback Callback function for the server request, must
  *     have one argument to receive the JSON response.
  */
-ArdublocklyServer.setArduinoBoard = function(new_board, callback) {
-  ArdublocklyServer.putJson(
-      '/settings/board', {"new_value": new_board}, callback);
+ArdublocklyServer.setArduinoBoard = function (new_board, callback) {
+    ArdublocklyServer.putJson(
+        '/settings/board', { "new_value": new_board }, callback);
 };
 
 /**
@@ -287,8 +287,8 @@ ArdublocklyServer.setArduinoBoard = function(new_board, callback) {
  * @param {!function} callback Callback function for the server request, must
  *     have one argument to receive the JSON response.
  */
-ArdublocklyServer.requestSerialPorts = function(callback) {
-  ArdublocklyServer.getJson('/settings/serial', callback);
+ArdublocklyServer.requestSerialPorts = function (callback) {
+    ArdublocklyServer.getJson('/settings/serial', callback);
 };
 
 /**
@@ -299,9 +299,9 @@ ArdublocklyServer.requestSerialPorts = function(callback) {
  * @param {!function} callback Callback function for the server request, must
  *     have one argument to receive the JSON response.
  */
-ArdublocklyServer.setSerialPort = function(new_port, callback) {
-  ArdublocklyServer.putJson(
-      '/settings/serial', {"new_value": new_port}, callback);
+ArdublocklyServer.setSerialPort = function (new_port, callback) {
+    ArdublocklyServer.putJson(
+        '/settings/serial', { "new_value": new_port }, callback);
 };
 
 /**
@@ -311,8 +311,8 @@ ArdublocklyServer.setSerialPort = function(new_port, callback) {
  * @param {!function} callback Callback function for the server request, must
  *     have one argument to receive the JSON response.
  */
-ArdublocklyServer.requestIdeOptions = function(callback) {
-  ArdublocklyServer.getJson('/settings/ide', callback);
+ArdublocklyServer.requestIdeOptions = function (callback) {
+    ArdublocklyServer.getJson('/settings/ide', callback);
 };
 
 /**
@@ -323,9 +323,9 @@ ArdublocklyServer.requestIdeOptions = function(callback) {
  * @param {!function} callback Callback function for the server request, must
  *     have one argument to receive the JSON response.
  */
-ArdublocklyServer.setIdeOptions = function(ide_option, callback) {
-  ArdublocklyServer.putJson(
-      '/settings/ide', {"new_value": ide_option}, callback);
+ArdublocklyServer.setIdeOptions = function (ide_option, callback) {
+    ArdublocklyServer.putJson(
+        '/settings/ide', { "new_value": ide_option }, callback);
 };
 
 
@@ -336,7 +336,7 @@ ArdublocklyServer.setIdeOptions = function(ide_option, callback) {
  * @param {!function} callback Callback function for the server request, must
  *     have one argument to receive the JSON response.
  */
-ArdublocklyServer.sendSketchToServer = function(code, callback) {
-  ArdublocklyServer.sendRequest(
-      '/code', 'POST', 'application/json', {"sketch_code": code}, callback);
+ArdublocklyServer.sendSketchToServer = function (code, callback) {
+    ArdublocklyServer.sendRequest(
+        '/code', 'POST', 'application/json', { "sketch_code": code }, callback);
 };
