@@ -326,7 +326,7 @@ Blockly.Micropython.reservePin = function (block, pin, pinType, warningTag) {
  * @return {string} Legal line of code.
  */
 Blockly.Micropython.scrubNakedValue = function (line) {
-    return line + ';\n';
+    return line + '\n';
 };
 
 /**

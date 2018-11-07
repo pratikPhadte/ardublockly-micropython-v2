@@ -67,7 +67,7 @@ Ardublockly.TOOLBOX_XML =
     //'    </block>' +
     //'    <block type="math_round"></block>' +
     //'    <block type="math_modulo"></block>' +
-    //'    <block type="math_constrain">' +
+    '    <block type="math_constrain">' +
     //'      <value name="LOW">' +
     //'        <block type="math_number">' +
     //'          <field name="NUM">1</field>' +

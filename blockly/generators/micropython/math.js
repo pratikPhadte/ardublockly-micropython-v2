@@ -288,25 +288,25 @@ Blockly.Micropython['math_constant'] = function (block) {
 //  return [code, Blockly.Micropython.ORDER_MULTIPLICATIVE];
 //};
 
-///**
-// * Generator for clipping a number(X) between two limits (Y and Z).
-// * Arduino code: loop { (X < Y ? Y : ( X > Z ? Z : X)) }
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {array} Completed code with order of operation.
-// */
-//Blockly.Micropython['math_constrain'] = function(block) {
-//  // Constrain a number between two limits.
-//  var argument0 = Blockly.Micropython.valueToCode(block, 'VALUE',
-//      Blockly.Micropython.ORDER_NONE) || '0';
-//  var argument1 = Blockly.Micropython.valueToCode(block, 'LOW',
-//      Blockly.Micropython.ORDER_NONE) || '0';
-//  var argument2 = Blockly.Micropython.valueToCode(block, 'HIGH',
-//      Blockly.Micropython.ORDER_NONE) || '0';
-//  var code = '(' + argument0 + ' < ' + argument1 + ' ? ' + argument1 +
-//      ' : ( ' + argument0 + ' > ' + argument2 + ' ? ' + argument2 + ' : ' +
-//      argument0 + '))';
-//  return [code, Blockly.Micropython.ORDER_UNARY_POSTFIX];
-//};
+/**
+ * Generator for clipping a number(X) between two limits (Y and Z).
+ * Arduino code: loop { (X < Y ? Y : ( X > Z ? Z : X)) }
+ * @param {!Blockly.Block} block Block to generate the code from.
+ * @return {array} Completed code with order of operation.
+ */
+
+Blockly.Micropython['math_constrain'] = function (block) {
+    // Constrain a number between two limits.
+    var argument0 = Blockly.Micropython.valueToCode(block, 'VALUE',
+        Blockly.Micropython.ORDER_NONE) || '0';
+    var argument1 = Blockly.Micropython.valueToCode(block, 'LOW',
+        Blockly.Micropython.ORDER_NONE) || '0';
+    var argument2 = Blockly.Micropython.valueToCode(block, 'HIGH',
+        Blockly.Micropython.ORDER_NONE) || 'float(\'inf\')';
+    var code = 'min(max(' + argument0 + ', ' + argument1 + '), ' +
+        argument2 + ')';
+    return [code, Blockly.Micropython.ORDER_FUNCTION_CALL];
+};
 
 ///**
 // * Generator for a random integer between two numbers (X and Y).
