@@ -53,10 +53,10 @@ Ardublockly.TOOLBOX_XML =
     '  <sep></sep>' +
     '  <category id="catMath" name="Math">' +
     '    <block type="math_number"></block>' +
-    //'    <block type="math_arithmetic"></block>' +
-    //'    <block type="math_single"></block>' +
+    '    <block type="math_arithmetic"></block>' +
+    '    <block type="math_single"></block>' +
     //'    <block type="math_trig"></block>' +
-    //'    <block type="math_constant"></block>' +
+    '    <block type="math_constant"></block>' +
     //'    <block type="math_number_property"></block>' +
     //'    <block type="math_change">' +
     //'      <value name="DELTA">' +

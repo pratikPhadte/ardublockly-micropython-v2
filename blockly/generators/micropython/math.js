@@ -16,163 +16,167 @@ goog.provide('Blockly.Micropython.math');
 goog.require('Blockly.Micropython');
 
 
+// If any new block imports any library, add that library name here.
+Blockly.Micropython.addReservedWords('math,random,Number');
+
+Blockly.Micropython['math_number'] = function (block) {
+    // Numeric value.
+    var code = parseFloat(block.getFieldValue('NUM'));
+    var order;
+    if (code == Infinity) {
+        code = 'float("inf")';
+        order = Blockly.Micropython.ORDER_FUNCTION_CALL;
+    } else if (code == -Infinity) {
+        code = '-float("inf")';
+        order = Blockly.Micropython.ORDER_UNARY_SIGN;
+    } else {
+        order = code < 0 ? Blockly.Micropython.ORDER_UNARY_SIGN :
+            Blockly.Micropython.ORDER_ATOMIC;
+    }
+    return [code, order];
+};
+
 /**
- * Generator for a numeric value (X).
- * Arduino code: loop { X }
+ * Generator for a basic arithmetic operators (X and Y) and power function
+ * (X ^ Y).
  * @param {!Blockly.Block} block Block to generate the code from.
  * @return {array} Completed code with order of operation.
  */
-Blockly.Micropython['math_number'] = function(block) {
-  // Numeric value.
-  var code = parseFloat(block.getFieldValue('NUM'));
-  if (code == Infinity) {
-    code = 'INFINITY';
-  } else if (code == -Infinity) {
-    code = '-INFINITY';
-  }
-  return [code, Blockly.Micropython.ORDER_ATOMIC];
+
+Blockly.Micropython['math_arithmetic'] = function (block) {
+    // Basic arithmetic operators, and power.
+    var OPERATORS = {
+        ADD: [' + ', Blockly.Micropython.ORDER_ADDITIVE],
+        MINUS: [' - ', Blockly.Micropython.ORDER_ADDITIVE],
+        MULTIPLY: [' * ', Blockly.Micropython.ORDER_MULTIPLICATIVE],
+        DIVIDE: [' / ', Blockly.Micropython.ORDER_MULTIPLICATIVE],
+        POWER: [' ** ', Blockly.Micropython.ORDER_EXPONENTIATION]
+    };
+    var tuple = OPERATORS[block.getFieldValue('OP')];
+    var operator = tuple[0];
+    var order = tuple[1];
+    var argument0 = Blockly.Micropython.valueToCode(block, 'A', order) || '0';
+    var argument1 = Blockly.Micropython.valueToCode(block, 'B', order) || '0';
+    var code = argument0 + operator + argument1;
+    return [code, order];
+    // In case of 'DIVIDE', division between integers returns different results
+    // in Python 2 and 3. However, is not an issue since Blockly does not
+    // guarantee identical results in all languages.  To do otherwise would
+    // require every operator to be wrapped in a function call.  This would kill
+    // legibility of the generated code.
 };
 
-///**
-// * Generator for a basic arithmetic operators (X and Y) and power function
-// * (X ^ Y).
-// * Arduino code: loop { X operator Y }
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {array} Completed code with order of operation.
-// */
-//Blockly.Micropython['math_arithmetic'] = function(block) {
-//  var OPERATORS = {
-//    ADD: [' + ', Blockly.Micropython.ORDER_ADDITIVE],
-//    MINUS: [' - ', Blockly.Micropython.ORDER_ADDITIVE],
-//    MULTIPLY: [' * ', Blockly.Micropython.ORDER_MULTIPLICATIVE],
-//    DIVIDE: [' / ', Blockly.Micropython.ORDER_MULTIPLICATIVE],
-//    POWER: [null, Blockly.Micropython.ORDER_NONE]  // Handle power separately.
-//  };
-//  var tuple = OPERATORS[block.getFieldValue('OP')];
-//  var operator = tuple[0];
-//  var order = tuple[1];
-//  var argument0 = Blockly.Micropython.valueToCode(block, 'A', order) || '0';
-//  var argument1 = Blockly.Micropython.valueToCode(block, 'B', order) || '0';
-//  var code;
-//  // Power in C++ requires a special case since it has no operator.
-//  if (!operator) {
-//    code = 'Math.pow(' + argument0 + ', ' + argument1 + ')';
-//    return [code, Blockly.Micropython.ORDER_UNARY_POSTFIX];
-//  }
-//  code = argument0 + operator + argument1;
-//  return [code, order];
-//};
+/**
+ * Generator for math operators that contain a single operand (X).
+ * @param {!Blockly.Block} block Block to generate the code from.
+ * @return {array} Completed code with order of operation.
+ */
+Blockly.Micropython['math_single'] = function (block) {
+    // Math operators with single operand.
+    var operator = block.getFieldValue('OP');
+    var code;
+    var arg;
+    if (operator == 'NEG') {
+        // Negation is a special case given its different operator precedence.
+        var code = Blockly.Micropython.valueToCode(block, 'NUM',
+            Blockly.Micropython.ORDER_UNARY_SIGN) || '0';
+        return ['-' + code, Blockly.Micropython.ORDER_UNARY_SIGN];
+    }
+    Blockly.Micropython.addImport('import_math', 'import math');
+    if (operator == 'SIN' || operator == 'COS' || operator == 'TAN') {
+        arg = Blockly.Micropython.valueToCode(block, 'NUM',
+            Blockly.Micropython.ORDER_MULTIPLICATIVE) || '0';
+    } else {
+        arg = Blockly.Micropython.valueToCode(block, 'NUM',
+            Blockly.Micropython.ORDER_NONE) || '0';
+    }
+    // First, handle cases which generate values that don't need parentheses
+    // wrapping the code.
+    switch (operator) {
+        case 'ABS':
+            code = 'math.fabs(' + arg + ')';
+            break;
+        case 'ROOT':
+            code = 'math.sqrt(' + arg + ')';
+            break;
+        case 'LN':
+            code = 'math.log(' + arg + ')';
+            break;
+        case 'LOG10':
+            code = 'math.log10(' + arg + ')';
+            break;
+        case 'EXP':
+            code = 'math.exp(' + arg + ')';
+            break;
+        case 'POW10':
+            code = 'math.pow(10,' + arg + ')';
+            break;
+        case 'ROUND':
+            code = 'round(' + arg + ')';
+            break;
+        case 'ROUNDUP':
+            code = 'math.ceil(' + arg + ')';
+            break;
+        case 'ROUNDDOWN':
+            code = 'math.floor(' + arg + ')';
+            break;
+        case 'SIN':
+            code = 'math.sin(' + arg + ' / 180.0 * math.pi)';
+            break;
+        case 'COS':
+            code = 'math.cos(' + arg + ' / 180.0 * math.pi)';
+            break;
+        case 'TAN':
+            code = 'math.tan(' + arg + ' / 180.0 * math.pi)';
+            break;
+    }
+    if (code) {
+        return [code, Blockly.Micropython.ORDER_FUNCTION_CALL];
+    }
+    // Second, handle cases which generate values that may need parentheses
+    // wrapping the code.
+    switch (operator) {
+        case 'ASIN':
+            code = 'math.asin(' + arg + ') / math.pi * 180';
+            break;
+        case 'ACOS':
+            code = 'math.acos(' + arg + ') / math.pi * 180';
+            break;
+        case 'ATAN':
+            code = 'math.atan(' + arg + ') / math.pi * 180';
+            break;
+        default:
+            throw Error('Unknown math operator: ' + operator);
+    }
+    return [code, Blockly.Micropython.ORDER_MULTIPLICATIVE];
+};
+/**
+ * Generator for math constants (PI, E, the Golden Ratio, sqrt(2), 1/sqrt(2),
+ * INFINITY).
+ * Arduino code: loop { constant }
+ * TODO: Might need to include "#define _USE_MATH_DEFINES"
+ *       The arduino header file already includes math.h
+ * @param {!Blockly.Block} block Block to generate the code from.
+ * @return {string} Completed code.
+ */
 
-///**
-// * Generator for math operators that contain a single operand (X).
-// * Arduino code: loop { operator(X) }
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {array} Completed code with order of operation.
-// */
-//Blockly.Micropython['math_single'] = function(block) {
-//  var operator = block.getFieldValue('OP');
-//  var code;
-//  var arg;
-//  if (operator == 'NEG') {
-//    // Negation is a special case given its different operator precedents.
-//    arg = Blockly.Micropython.valueToCode(block, 'NUM',
-//        Blockly.Micropython.ORDER_UNARY_PREFIX) || '0';
-//    if (arg[0] == '-') {
-//      // --3 is not legal in C++ in this context.
-//      arg = ' ' + arg;
-//    }
-//    code = '-' + arg;
-//    return [code, Blockly.Micropython.ORDER_UNARY_PREFIX];
-//  }
-//  if (operator == 'ABS' || operator.substring(0, 5) == 'ROUND') {
-//    arg = Blockly.Micropython.valueToCode(block, 'NUM',
-//        Blockly.Micropython.ORDER_UNARY_POSTFIX) || '0';
-//  } else if (operator == 'SIN' || operator == 'COS' || operator == 'TAN') {
-//    arg = Blockly.Micropython.valueToCode(block, 'NUM',
-//        Blockly.Micropython.ORDER_MULTIPLICATIVE) || '0';
-//  } else {
-//    arg = Blockly.Micropython.valueToCode(block, 'NUM',
-//        Blockly.Micropython.ORDER_NONE) || '0';
-//  }
-//  // First, handle cases which generate values that don't need parentheses.
-//  switch (operator) {
-//    case 'ABS':
-//      code = 'abs(' + arg + ')';
-//      break;
-//    case 'ROOT':
-//      code = 'sqrt(' + arg + ')';
-//      break;
-//    case 'LN':
-//      code = 'log(' + arg + ')';
-//      break;
-//    case 'EXP':
-//      code = 'exp(' + arg + ')';
-//      break;
-//    case 'POW10':
-//      code = 'pow(10,' + arg + ')';
-//      break;
-//    case 'ROUND':
-//      code = 'round(' + arg + ')';
-//      break;
-//    case 'ROUNDUP':
-//      code = 'ceil(' + arg + ')';
-//      break;
-//    case 'ROUNDDOWN':
-//      code = 'floor(' + arg + ')';
-//      break;
-//    case 'SIN':
-//      code = 'sin(' + arg + ' / 180 * Math.PI)';
-//      break;
-//    case 'COS':
-//      code = 'cos(' + arg + ' / 180 * Math.PI)';
-//      break;
-//    case 'TAN':
-//      code = 'tan(' + arg + ' / 180 * Math.PI)';
-//      break;
-//  }
-//  if (code) {
-//    return [code, Blockly.Micropython.ORDER_UNARY_POSTFIX];
-//  }
-//  // Second, handle cases which generate values that may need parentheses.
-//  switch (operator) {
-//    case 'LOG10':
-//      code = 'log(' + arg + ') / log(10)';
-//      break;
-//    case 'ASIN':
-//      code = 'asin(' + arg + ') / M_PI * 180';
-//      break;
-//    case 'ACOS':
-//      code = 'acos(' + arg + ') / M_PI * 180';
-//      break;
-//    case 'ATAN':
-//      code = 'atan(' + arg + ') / M_PI * 180';
-//      break;
-//    default:
-//      throw 'Unknown math operator: ' + operator;
-//  }
-//  return [code, Blockly.Micropython.ORDER_MULTIPLICATIVE];
-//};
-
-///**
-// * Generator for math constants (PI, E, the Golden Ratio, sqrt(2), 1/sqrt(2),
-// * INFINITY).
-// * Arduino code: loop { constant }
-// * TODO: Might need to include "#define _USE_MATH_DEFINES"
-// *       The arduino header file already includes math.h
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {string} Completed code.
-// */
-//Blockly.Micropython['math_constant'] = function(block) {
-//  var CONSTANTS = {
-//    'PI': ['M_PI', Blockly.Micropython.ORDER_UNARY_POSTFIX],
-//    'E': ['M_E', Blockly.Micropython.ORDER_UNARY_POSTFIX],
-//    'GOLDEN_RATIO': ['(1 + sqrt(5)) / 2', Blockly.Micropython.ORDER_MULTIPLICATIVE],
-//    'SQRT2': ['M_SQRT2', Blockly.Micropython.ORDER_UNARY_POSTFIX],
-//    'SQRT1_2': ['M_SQRT1_2', Blockly.Micropython.ORDER_UNARY_POSTFIX],
-//    'INFINITY': ['INFINITY', Blockly.Micropython.ORDER_ATOMIC]
-//  };
-//  return CONSTANTS[block.getFieldValue('CONSTANT')];
-//};
+Blockly.Micropython['math_constant'] = function (block) {
+    // Constants: PI, E, the Golden Ratio, sqrt(2), 1/sqrt(2), INFINITY.
+    var CONSTANTS = {
+        'PI': ['math.pi', Blockly.Micropython.ORDER_MEMBER],
+        'E': ['math.e', Blockly.Micropython.ORDER_MEMBER],
+        'GOLDEN_RATIO': ['(1 + math.sqrt(5)) / 2',
+            Blockly.Micropython.ORDER_MULTIPLICATIVE],
+        'SQRT2': ['math.sqrt(2)', Blockly.Micropython.ORDER_MEMBER],
+        'SQRT1_2': ['math.sqrt(1.0 / 2)', Blockly.Micropython.ORDER_MEMBER],
+        'INFINITY': ['float(\'inf\')', Blockly.Micropython.ORDER_ATOMIC]
+    };
+    var constant = block.getFieldValue('CONSTANT');
+    if (constant != 'INFINITY') {
+        Blockly.Micropython.addImport('import_math', 'import math');
+    }
+    return CONSTANTS[constant];
+};
 
 ///**
 // * Generator for math checks: if a number is even, odd, prime, whole, positive,

@@ -24,9 +24,9 @@ Blockly.Micropython['time_delay'] = function (block) {
         block, 'DELAY_TIME_MILI', Blockly.Micropython.ORDER_ATOMIC) || '0';
 
     var pinImportFromCode = 'from time import sleep';
-    Blockly.Micropython.addFromImport('sleep', pinImportFromCode);
+    Blockly.Micropython.addImport('sleep', pinImportFromCode);
 
-    var code = 'sleep(' + delayTime + '.0 / 1000.0)\n';
+    var code = 'sleep(' + delayTime + ' / 1000.0)\n';
     return code;
 };
 

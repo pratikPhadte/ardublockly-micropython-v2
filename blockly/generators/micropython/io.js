@@ -71,7 +71,7 @@ Blockly.Micropython['io_builtin_led'] = function(block) {
       block, pin, Blockly.Micropython.PinTypes.OUTPUT, 'Set LED');
 
     var pinImportFromCode = 'from machine import Pin';
-    Blockly.Micropython.addFromImport('io_' + pin, pinImportFromCode);
+    Blockly.Micropython.addImport('io_' + pin, pinImportFromCode);
 
     var pinDefinitionCode = 'BUILT_IN_LED = const(2)';
     Blockly.Micropython.addDefinition('io_' + pin, pinDefinitionCode);

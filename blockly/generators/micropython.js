@@ -97,7 +97,7 @@ Blockly.Micropython.DEF_FUNC_NAME = Blockly.Micropython.FUNCTION_NAME_PLACEHOLDE
  */
 Blockly.Micropython.init = function (workspace) {
     // Create a dictionary of definitions to be printed at the top of the sketch
-    Blockly.Micropython.fromimports_ = Object.create(null);
+    Blockly.Micropython.imports_ = Object.create(null);
     // Create a dictionary of global definitions to be printed after variables
     Blockly.Micropython.definitions_ = Object.create(null);
     // Create a dictionary of variables
@@ -140,16 +140,16 @@ Blockly.Micropython.init = function (workspace) {
  */
 Blockly.Micropython.finish = function (code) {
     // Convert the includes, definitions, and functions dictionaries into lists
-    var fromimports = [];
+    var imports = [];
     var definitions = [];
     var variables = [];
     var functions = [];
 
-    for (var name in Blockly.Micropython.fromimports_) {
-        fromimports.push(Blockly.Micropython.fromimports_[name]);
+    for (var name in Blockly.Micropython.imports_) {
+        imports.push(Blockly.Micropython.imports_[name]);
     }
-    if (fromimports.length) {
-        fromimports.push('\n');
+    if (imports.length) {
+        imports.push('\n');
     }
     for (var name in Blockly.Micropython.variables_) {
         variables.push(Blockly.Micropython.variables_[name]);
@@ -187,7 +187,7 @@ Blockly.Micropython.finish = function (code) {
     }
 
     // Clean up temporary data
-    delete Blockly.Micropython.fromimports_;
+    delete Blockly.Micropython.imports_;
     delete Blockly.Micropython.definitions_;
     delete Blockly.Micropython.codeFunctions_;
     delete Blockly.Micropython.userFunctions_;
@@ -197,7 +197,7 @@ Blockly.Micropython.finish = function (code) {
 
     Blockly.Micropython.variableDB_.reset();
 
-    var allDefs = fromimports.join('\n') + variables.join('\n') +
+    var allDefs = imports.join('\n') + variables.join('\n') +
         definitions.join('\n') + functions.join('\n\n');
     var setup = setups.join('\n') + '\n\n';
     var loop = code.replace(/\n/g, '\n');
@@ -205,14 +205,14 @@ Blockly.Micropython.finish = function (code) {
 };
 
 /**
- * Adds a string of "fromimport" code to be added to the sketch.
- * Once a fromimport is added it will not get overwritten with new code.
- * @param {!string} fromimportTag Identifier for this fromimport code.
- * @param {!string} code Code to be fromimportd at the very top of the sketch.
+ * Adds a string of "import" code to be added to the sketch.
+ * Once a import is added it will not get overwritten with new code.
+ * @param {!string} importTag Identifier for this import code.
+ * @param {!string} code Code to be importd at the very top of the sketch.
  */
-Blockly.Micropython.addFromImport = function (fromimportTag, code) {
-    if (Blockly.Micropython.fromimports_[fromimportTag] === undefined) {
-        Blockly.Micropython.fromimports_[fromimportTag] = code;
+Blockly.Micropython.addImport = function (importTag, code) {
+    if (Blockly.Micropython.imports_[importTag] === undefined) {
+        Blockly.Micropython.imports_[importTag] = code;
     }
 };
 
