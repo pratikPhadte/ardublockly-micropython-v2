@@ -69,22 +69,22 @@ goog.require('Blockly.Micropython');
  * @param {!Blockly.Block} block Block to generate the code from.
  * @return {string} Completed code.
  */
+
+Blockly.Micropython['controls_repeat'] = Blockly.Micropython['controls_repeat_ext'];
+
 Blockly.Micropython['controls_whileUntil'] = function (block) {
     // Do while/until loop.
     var until = block.getFieldValue('MODE') == 'UNTIL';
     var argument0 = Blockly.Micropython.valueToCode(block, 'BOOL',
-        until ? Blockly.Micropython.ORDER_LOGICAL_OR :
+        until ? Blockly.Micropython.ORDER_LOGICAL_NOT :
             Blockly.Micropython.ORDER_NONE) || 'False';
     var branch = Blockly.Micropython.statementToCode(block, 'DO');
-    branch = Blockly.Micropython.addLoopTrap(branch, block.id);
-
+    branch = Blockly.Micropython.addLoopTrap(branch, block.id) ||
+        Blockly.Micropython.PASS;
     if (until) {
-        if (!argument0.match(/^\w+$/)) {
-            argument0 = '(' + argument0 + ')';
-        }
         argument0 = 'not ' + argument0;
     }
-    return 'while ' + argument0 + ': \n' + branch + '\n';
+    return 'while ' + argument0 + ':\n' + branch;
 };
 
 ///**

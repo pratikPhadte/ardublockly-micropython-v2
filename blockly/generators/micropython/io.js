@@ -76,8 +76,8 @@ Blockly.Micropython['io_builtin_led'] = function(block) {
     var pinDefinitionCode = 'BUILT_IN_LED = const(2)';
     Blockly.Micropython.addDefinition('io_' + pin, pinDefinitionCode);
 
-    var pinSetupCode = 'led = Pin(BUILT_IN_LED, Pin.OUT)';
-    Blockly.Micropython.addSetup('io_' + pin, pinSetupCode, false);
+    var pinDeclarationCode = 'led = Pin(BUILT_IN_LED, Pin.OUT)';
+    Blockly.Micropython.addDeclaration('io_' + pin, pinDeclarationCode, false);
 
     var code = 'led.value(' + stateOutput + ')\n';
   return code;

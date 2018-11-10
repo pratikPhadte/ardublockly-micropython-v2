@@ -1,13 +1,26 @@
 /**
- * @license Licensed under the Apache License, Version 2.0 (the "License"):
- *          http://www.apache.org/licenses/LICENSE-2.0
+ * @license
+ * Visual Blocks Language
+ *
+ * Copyright 2012 Google Inc.
+ * https://developers.google.com/blockly/
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 /**
- * @fileoverview Generating Arduino code for the Math blocks.
- *
- * TODO: Math on list needs lists to be implemented.
- *       math_constant and math_change needs to be tested in compiler.
+ * @fileoverview Generating Python for math blocks.
+ * @author q.neutron@gmail.com (Quynh Neutron)
  */
 'use strict';
 
@@ -36,21 +49,14 @@ Blockly.Micropython['math_number'] = function (block) {
     return [code, order];
 };
 
-/**
- * Generator for a basic arithmetic operators (X and Y) and power function
- * (X ^ Y).
- * @param {!Blockly.Block} block Block to generate the code from.
- * @return {array} Completed code with order of operation.
- */
-
 Blockly.Micropython['math_arithmetic'] = function (block) {
     // Basic arithmetic operators, and power.
     var OPERATORS = {
-        ADD: [' + ', Blockly.Micropython.ORDER_ADDITIVE],
-        MINUS: [' - ', Blockly.Micropython.ORDER_ADDITIVE],
-        MULTIPLY: [' * ', Blockly.Micropython.ORDER_MULTIPLICATIVE],
-        DIVIDE: [' / ', Blockly.Micropython.ORDER_MULTIPLICATIVE],
-        POWER: [' ** ', Blockly.Micropython.ORDER_EXPONENTIATION]
+        'ADD': [' + ', Blockly.Micropython.ORDER_ADDITIVE],
+        'MINUS': [' - ', Blockly.Micropython.ORDER_ADDITIVE],
+        'MULTIPLY': [' * ', Blockly.Micropython.ORDER_MULTIPLICATIVE],
+        'DIVIDE': [' / ', Blockly.Micropython.ORDER_MULTIPLICATIVE],
+        'POWER': [' ** ', Blockly.Micropython.ORDER_EXPONENTIATION]
     };
     var tuple = OPERATORS[block.getFieldValue('OP')];
     var operator = tuple[0];
@@ -66,11 +72,6 @@ Blockly.Micropython['math_arithmetic'] = function (block) {
     // legibility of the generated code.
 };
 
-/**
- * Generator for math operators that contain a single operand (X).
- * @param {!Blockly.Block} block Block to generate the code from.
- * @return {array} Completed code with order of operation.
- */
 Blockly.Micropython['math_single'] = function (block) {
     // Math operators with single operand.
     var operator = block.getFieldValue('OP');
@@ -82,7 +83,7 @@ Blockly.Micropython['math_single'] = function (block) {
             Blockly.Micropython.ORDER_UNARY_SIGN) || '0';
         return ['-' + code, Blockly.Micropython.ORDER_UNARY_SIGN];
     }
-    Blockly.Micropython.addImport('import_math', 'import math');
+    Blockly.Micropython.definitions_['import_math'] = 'import math';
     if (operator == 'SIN' || operator == 'COS' || operator == 'TAN') {
         arg = Blockly.Micropython.valueToCode(block, 'NUM',
             Blockly.Micropython.ORDER_MULTIPLICATIVE) || '0';
@@ -150,15 +151,6 @@ Blockly.Micropython['math_single'] = function (block) {
     }
     return [code, Blockly.Micropython.ORDER_MULTIPLICATIVE];
 };
-/**
- * Generator for math constants (PI, E, the Golden Ratio, sqrt(2), 1/sqrt(2),
- * INFINITY).
- * Arduino code: loop { constant }
- * TODO: Might need to include "#define _USE_MATH_DEFINES"
- *       The arduino header file already includes math.h
- * @param {!Blockly.Block} block Block to generate the code from.
- * @return {string} Completed code.
- */
 
 Blockly.Micropython['math_constant'] = function (block) {
     // Constants: PI, E, the Golden Ratio, sqrt(2), 1/sqrt(2), INFINITY.
@@ -173,127 +165,197 @@ Blockly.Micropython['math_constant'] = function (block) {
     };
     var constant = block.getFieldValue('CONSTANT');
     if (constant != 'INFINITY') {
-        Blockly.Micropython.addImport('import_math', 'import math');
+        Blockly.Micropython.definitions_['import_math'] = 'import math';
     }
     return CONSTANTS[constant];
 };
 
-///**
-// * Generator for math checks: if a number is even, odd, prime, whole, positive,
-// * negative, or if it is divisible by certain number. Returns true or false.
-// * Arduino code: complex code, can create external functions.
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {array} Completed code with order of operation.
-// */
-//Blockly.Micropython['math_number_property'] = function(block) {
-//  var number_to_check = Blockly.Micropython.valueToCode(block, 'NUMBER_TO_CHECK',
-//      Blockly.Micropython.ORDER_MULTIPLICATIVE) || '0';
-//  var dropdown_property = block.getFieldValue('PROPERTY');
-//  var code;
-//  if (dropdown_property == 'PRIME') {
-//    var func = [
-//        'boolean ' + Blockly.Micropython.DEF_FUNC_NAME + '(int n) {',
-//        '  // https://en.wikipedia.org/wiki/Primality_test#Naive_methods',
-//        '  if (n == 2 || n == 3) {',
-//        '    return true;',
-//        '  }',
-//        '  // False if n is NaN, negative, is 1.',
-//        '  // And false if n is divisible by 2 or 3.',
-//        '  if (isnan(n) || (n <= 1) || (n == 1) || (n % 2 == 0) || ' +
-//            '(n % 3 == 0)) {',
-//        '    return false;',
-//        '  }',
-//        '  // Check all the numbers of form 6k +/- 1, up to sqrt(n).',
-//        '  for (int x = 6; x <= sqrt(n) + 1; x += 6) {',
-//        '    if (n % (x - 1) == 0 || n % (x + 1) == 0) {',
-//        '      return false;',
-//        '    }',
-//        '  }',
-//        '  return true;',
-//        '}'];
-//    var funcName = Blockly.Micropython.addFunction('mathIsPrime', func.join('\n'));
-//    Blockly.Micropython.addInclude('math', '#include <math.h>');
-//    code = funcName + '(' + number_to_check + ')';
-//    return [code, Blockly.Micropython.ORDER_UNARY_POSTFIX];
-//  }
-//  switch (dropdown_property) {
-//    case 'EVEN':
-//      code = number_to_check + ' % 2 == 0';
-//      break;
-//    case 'ODD':
-//      code = number_to_check + ' % 2 == 1';
-//      break;
-//    case 'WHOLE':
-//      Blockly.Micropython.addInclude('math', '#include <math.h>');
-//      code = '(floor(' + number_to_check + ') == ' + number_to_check + ')';
-//      break;
-//    case 'POSITIVE':
-//      code = number_to_check + ' > 0';
-//      break;
-//    case 'NEGATIVE':
-//      code = number_to_check + ' < 0';
-//      break;
-//    case 'DIVISIBLE_BY':
-//      var divisor = Blockly.Micropython.valueToCode(block, 'DIVISOR',
-//          Blockly.Micropython.ORDER_MULTIPLICATIVE) || '0';
-//      code = number_to_check + ' % ' + divisor + ' == 0';
-//      break;
-//  }
-//  return [code, Blockly.Micropython.ORDER_EQUALITY];
-//};
+Blockly.Micropython['math_number_property'] = function (block) {
+    // Check if a number is even, odd, prime, whole, positive, or negative
+    // or if it is divisible by certain number. Returns true or false.
+    var number_to_check = Blockly.Micropython.valueToCode(block, 'NUMBER_TO_CHECK',
+        Blockly.Micropython.ORDER_MULTIPLICATIVE) || '0';
+    var dropdown_property = block.getFieldValue('PROPERTY');
+    var code;
+    if (dropdown_property == 'PRIME') {
+        Blockly.Micropython.definitions_['import_math'] = 'import math';
+        Blockly.Micropython.definitions_['from_numbers_import_Number'] =
+            'from numbers import Number';
+        var functionName = Blockly.Micropython.provideFunction_(
+            'math_isPrime',
+            ['def ' + Blockly.Micropython.FUNCTION_NAME_PLACEHOLDER_ + '(n):',
+                '  # https://en.wikipedia.org/wiki/Primality_test#Naive_methods',
+                '  # If n is not a number but a string, try parsing it.',
+                '  if not isinstance(n, Number):',
+                '    try:',
+                '      n = float(n)',
+                '    except:',
+                '      return False',
+                '  if n == 2 or n == 3:',
+                '    return True',
+            '  # False if n is negative, is 1, or not whole,' +
+            ' or if n is divisible by 2 or 3.',
+                '  if n <= 1 or n % 1 != 0 or n % 2 == 0 or n % 3 == 0:',
+                '    return False',
+                '  # Check all the numbers of form 6k +/- 1, up to sqrt(n).',
+                '  for x in range(6, int(math.sqrt(n)) + 2, 6):',
+                '    if n % (x - 1) == 0 or n % (x + 1) == 0:',
+                '      return False',
+                '  return True']);
+        code = functionName + '(' + number_to_check + ')';
+        return [code, Blockly.Micropython.ORDER_FUNCTION_CALL];
+    }
+    switch (dropdown_property) {
+        case 'EVEN':
+            code = number_to_check + ' % 2 == 0';
+            break;
+        case 'ODD':
+            code = number_to_check + ' % 2 == 1';
+            break;
+        case 'WHOLE':
+            code = number_to_check + ' % 1 == 0';
+            break;
+        case 'POSITIVE':
+            code = number_to_check + ' > 0';
+            break;
+        case 'NEGATIVE':
+            code = number_to_check + ' < 0';
+            break;
+        case 'DIVISIBLE_BY':
+            var divisor = Blockly.Micropython.valueToCode(block, 'DIVISOR',
+                Blockly.Micropython.ORDER_MULTIPLICATIVE);
+            // If 'divisor' is some code that evals to 0, Python will raise an error.
+            if (!divisor || divisor == '0') {
+                return ['False', Blockly.Micropython.ORDER_ATOMIC];
+            }
+            code = number_to_check + ' % ' + divisor + ' == 0';
+            break;
+    }
+    return [code, Blockly.Micropython.ORDER_RELATIONAL];
+};
 
-///**
-// * Generator to add (Y) to a variable (X).
-// * If variable X has not been declared before this block it will be declared as
-// * a (not initialised) global int, however globals are 0 initialised in C/C++.
-// * Arduino code: loop { X += Y; }
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {array} Completed code with order of operation.
-// */
-//Blockly.Micropython['math_change'] = function(block) {
-//  var argument0 = Blockly.Micropython.valueToCode(block, 'DELTA',
-//      Blockly.Micropython.ORDER_ADDITIVE) || '0';
-//  var varName = Blockly.Micropython.variableDB_.getName(
-//      block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
-//  return varName + ' += ' + argument0 + ';\n';
-//};
+Blockly.Micropython['math_change'] = function (block) {
+    // Add to a variable in place.
+    Blockly.Micropython.definitions_['from_numbers_import_Number'] =
+        'from numbers import Number';
+    var argument0 = Blockly.Micropython.valueToCode(block, 'DELTA',
+        Blockly.Micropython.ORDER_ADDITIVE) || '0';
+    var varName = Blockly.Micropython.variableDB_.getName(block.getFieldValue('VAR'),
+        Blockly.Variables.NAME_TYPE);
+    return varName + ' = (' + varName + ' if isinstance(' + varName +
+        ', Number) else 0) + ' + argument0 + '\n';
+};
 
-///** Rounding functions have a single operand. */
-//Blockly.Micropython['math_round'] = Blockly.Micropython['math_single'];
+// Rounding functions have a single operand.
+Blockly.Micropython['math_round'] = Blockly.Micropython['math_single'];
+// Trigonometry functions have a single operand.
+Blockly.Micropython['math_trig'] = Blockly.Micropython['math_single'];
 
-///** Trigonometry functions have a single operand. */
-//Blockly.Micropython['math_trig'] = Blockly.Micropython['math_single'];
+Blockly.Micropython['math_on_list'] = function (block) {
+    // Math functions for lists.
+    var func = block.getFieldValue('OP');
+    var list = Blockly.Micropython.valueToCode(block, 'LIST',
+        Blockly.Micropython.ORDER_NONE) || '[]';
+    var code;
+    switch (func) {
+        case 'SUM':
+            code = 'sum(' + list + ')';
+            break;
+        case 'MIN':
+            code = 'min(' + list + ')';
+            break;
+        case 'MAX':
+            code = 'max(' + list + ')';
+            break;
+        case 'AVERAGE':
+            Blockly.Micropython.definitions_['from_numbers_import_Number'] =
+                'from numbers import Number';
+            var functionName = Blockly.Micropython.provideFunction_(
+                'math_mean',
+                // This operation excludes null and values that aren't int or float:',
+                // math_mean([null, null, "aString", 1, 9]) == 5.0.',
+                ['def ' + Blockly.Micropython.FUNCTION_NAME_PLACEHOLDER_ + '(myList):',
+                    '  localList = [e for e in myList if isinstance(e, Number)]',
+                    '  if not localList: return',
+                    '  return float(sum(localList)) / len(localList)']);
+            code = functionName + '(' + list + ')';
+            break;
+        case 'MEDIAN':
+            Blockly.Micropython.definitions_['from_numbers_import_Number'] =
+                'from numbers import Number';
+            var functionName = Blockly.Micropython.provideFunction_(
+                'math_median',
+                // This operation excludes null values:
+                // math_median([null, null, 1, 3]) == 2.0.
+                ['def ' + Blockly.Micropython.FUNCTION_NAME_PLACEHOLDER_ + '(myList):',
+                    '  localList = sorted([e for e in myList if isinstance(e, Number)])',
+                    '  if not localList: return',
+                    '  if len(localList) % 2 == 0:',
+                '    return (localList[len(localList) // 2 - 1] + ' +
+                'localList[len(localList) // 2]) / 2.0',
+                    '  else:',
+                    '    return localList[(len(localList) - 1) // 2]']);
+            code = functionName + '(' + list + ')';
+            break;
+        case 'MODE':
+            var functionName = Blockly.Micropython.provideFunction_(
+                'math_modes',
+                // As a list of numbers can contain more than one mode,
+                // the returned result is provided as an array.
+                // Mode of [3, 'x', 'x', 1, 1, 2, '3'] -> ['x', 1].
+                ['def ' + Blockly.Micropython.FUNCTION_NAME_PLACEHOLDER_ + '(some_list):',
+                    '  modes = []',
+                    '  # Using a lists of [item, count] to keep count rather than dict',
+                '  # to avoid "unhashable" errors when the counted item is ' +
+                'itself a list or dict.',
+                    '  counts = []',
+                    '  maxCount = 1',
+                    '  for item in some_list:',
+                    '    found = False',
+                    '    for count in counts:',
+                    '      if count[0] == item:',
+                    '        count[1] += 1',
+                    '        maxCount = max(maxCount, count[1])',
+                    '        found = True',
+                    '    if not found:',
+                    '      counts.append([item, 1])',
+                    '  for counted_item, item_count in counts:',
+                    '    if item_count == maxCount:',
+                    '      modes.append(counted_item)',
+                    '  return modes']);
+            code = functionName + '(' + list + ')';
+            break;
+        case 'STD_DEV':
+            Blockly.Micropython.definitions_['import_math'] = 'import math';
+            var functionName = Blockly.Micropython.provideFunction_(
+                'math_standard_deviation',
+                ['def ' + Blockly.Micropython.FUNCTION_NAME_PLACEHOLDER_ + '(numbers):',
+                    '  n = len(numbers)',
+                    '  if n == 0: return',
+                    '  mean = float(sum(numbers)) / n',
+                    '  variance = sum((x - mean) ** 2 for x in numbers) / n',
+                    '  return math.sqrt(variance)']);
+            code = functionName + '(' + list + ')';
+            break;
+        case 'RANDOM':
+            Blockly.Micropython.definitions_['import_random'] = 'import random';
+            code = 'random.choice(' + list + ')';
+            break;
+        default:
+            throw Error('Unknown operator: ' + func);
+    }
+    return [code, Blockly.Micropython.ORDER_FUNCTION_CALL];
+};
 
-///**
-// * Generator for the math function to a list.
-// * Arduino code: ???
-// * TODO: List have to be implemented first. Removed from toolbox for now.
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {array} Completed code with order of operation.
-// */
-//Blockly.Micropython['math_on_list'] = Blockly.Micropython.noGeneratorCodeInline;
-
-///**
-// * Generator for the math modulo function (calculates remainder of X/Y).
-// * Arduino code: loop { X % Y }
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {array} Completed code with order of operation.
-// */
-//Blockly.Micropython['math_modulo'] = function(block) {
-//  var argument0 = Blockly.Micropython.valueToCode(block, 'DIVIDEND',
-//      Blockly.Micropython.ORDER_MULTIPLICATIVE) || '0';
-//  var argument1 = Blockly.Micropython.valueToCode(block, 'DIVISOR',
-//      Blockly.Micropython.ORDER_MULTIPLICATIVE) || '0';
-//  var code = argument0 + ' % ' + argument1;
-//  return [code, Blockly.Micropython.ORDER_MULTIPLICATIVE];
-//};
-
-/**
- * Generator for clipping a number(X) between two limits (Y and Z).
- * Arduino code: loop { (X < Y ? Y : ( X > Z ? Z : X)) }
- * @param {!Blockly.Block} block Block to generate the code from.
- * @return {array} Completed code with order of operation.
- */
+Blockly.Micropython['math_modulo'] = function (block) {
+    // Remainder computation.
+    var argument0 = Blockly.Micropython.valueToCode(block, 'DIVIDEND',
+        Blockly.Micropython.ORDER_MULTIPLICATIVE) || '0';
+    var argument1 = Blockly.Micropython.valueToCode(block, 'DIVISOR',
+        Blockly.Micropython.ORDER_MULTIPLICATIVE) || '0';
+    var code = argument0 + ' % ' + argument1;
+    return [code, Blockly.Micropython.ORDER_MULTIPLICATIVE];
+};
 
 Blockly.Micropython['math_constrain'] = function (block) {
     // Constrain a number between two limits.
@@ -308,42 +370,30 @@ Blockly.Micropython['math_constrain'] = function (block) {
     return [code, Blockly.Micropython.ORDER_FUNCTION_CALL];
 };
 
-///**
-// * Generator for a random integer between two numbers (X and Y).
-// * Arduino code: loop { math_random_int(X, Y); }
-// *               and an aditional math_random_int function
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {array} Completed code with order of operation.
-// */
-//Blockly.Micropython['math_random_int'] = function(block) {
-//  var argument0 = Blockly.Micropython.valueToCode(block, 'FROM',
-//      Blockly.Micropython.ORDER_NONE) || '0';
-//  var argument1 = Blockly.Micropython.valueToCode(block, 'TO',
-//      Blockly.Micropython.ORDER_NONE) || '0';
-//  var functionName = Blockly.Micropython.variableDB_.getDistinctName(
-//      'math_random_int', Blockly.Generator.NAME_TYPE);
-//  Blockly.Micropython.math_random_int.random_function = functionName;
-//  var func = [
-//      'int ' + Blockly.Micropython.DEF_FUNC_NAME + '(int min, int max) {',
-//      '  if (min > max) {',
-//      '    // Swap min and max to ensure min is smaller.',
-//      '    int temp = min;',
-//      '    min = max;',
-//      '    max = temp;',
-//      '  }',
-//      '  return min + (rand() % (max - min + 1));',
-//      '}'];
-//  var funcName = Blockly.Micropython.addFunction('mathRandomInt', func.join('\n'));
-//  var code = funcName + '(' + argument0 + ', ' + argument1 + ')';
-//  return [code, Blockly.Micropython.ORDER_UNARY_POSTFIX];
-//};
+Blockly.Micropython['math_random_int'] = function (block) {
+    // Random integer between [X] and [Y].
+    Blockly.Micropython.definitions_['import_random'] = 'import random';
+    var argument0 = Blockly.Micropython.valueToCode(block, 'FROM',
+        Blockly.Micropython.ORDER_NONE) || '0';
+    var argument1 = Blockly.Micropython.valueToCode(block, 'TO',
+        Blockly.Micropython.ORDER_NONE) || '0';
+    var code = 'random.randint(' + argument0 + ', ' + argument1 + ')';
+    return [code, Blockly.Micropython.ORDER_FUNCTION_CALL];
+};
 
-///**
-// * Generator for a random float from 0 to 1.
-// * Arduino code: loop { (rand() / RAND_MAX) }
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {string} Completed code.
-// */
-//Blockly.Micropython['math_random_float'] = function(block) {
-//  return ['(rand() / RAND_MAX)', Blockly.Micropython.ORDER_UNARY_POSTFIX];
-//};
+Blockly.Micropython['math_random_float'] = function (block) {
+    // Random fraction between 0 and 1.
+    Blockly.Micropython.definitions_['import_random'] = 'import random';
+    return ['random.random()', Blockly.Micropython.ORDER_FUNCTION_CALL];
+};
+
+Blockly.Micropython['math_atan2'] = function (block) {
+    // Arctangent of point (X, Y) in degrees from -180 to 180.
+    Blockly.Micropython.definitions_['import_math'] = 'import math';
+    var argument0 = Blockly.Micropython.valueToCode(block, 'X',
+        Blockly.Micropython.ORDER_NONE) || '0';
+    var argument1 = Blockly.Micropython.valueToCode(block, 'Y',
+        Blockly.Micropython.ORDER_NONE) || '0';
+    return ['math.atan2(' + argument1 + ', ' + argument0 + ') / math.pi * 180',
+    Blockly.Micropython.ORDER_MULTIPLICATIVE];
+};
