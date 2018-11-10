@@ -67,7 +67,7 @@ Ardublockly.TOOLBOX_XML =
     //'    </block>' +
     //'    <block type="math_round"></block>' +
     //'    <block type="math_modulo"></block>' +
-    '    <block type="math_constrain">' +
+    //'    <block type="math_constrain">' +
     //'      <value name="LOW">' +
     //'        <block type="math_number">' +
     //'          <field name="NUM">1</field>' +
@@ -109,19 +109,19 @@ Ardublockly.TOOLBOX_XML =
     ////'    <!--block type="text_print"></block Part of the serial comms -->' +
     //'  </category>' +
     //'  <sep></sep>' +
-    //'  <category id="catVariables" name="Variables">' +
-    //'    <block type="variables_get"></block>' +
-    //'    <block type="variables_set"></block>' +
-    //'    <block type="variables_set">' +
-    //'      <value name="VALUE">' +
-    //'        <block type="variables_set_type"></block>' +
-    //'      </value>' +
-    //'    </block>' +
-    //'    <block type="variables_set_type"></block>' +
-    //'  </category>' +
-    //'  <sep></sep>' +
-    //'  <category id="catFunctions" name="Functions" custom="PROCEDURE"></category>' +
-    //'  <sep></sep>' +
+    '  <category id="catVariables" name="Variables">' +
+    '    <block type="variables_get"></block>' +
+    '    <block type="variables_set"></block>' +
+    '    <block type="variables_set">' +
+    '      <value name="VALUE">' +
+    '        <block type="variables_set_type"></block>' +
+    '      </value>' +
+    '    </block>' +
+    '    <block type="variables_set_type"></block>' +
+    '  </category>' +
+    '  <sep></sep>' +
+    '  <category id="catFunctions" name="Functions" custom="PROCEDURE"></category>' +
+    '  <sep></sep>' +
     '  <category id="catInputOutput" name="Input/Output">' +
     //'    <block type="io_digitalwrite">' +
     //'      <value name="STATE">' +

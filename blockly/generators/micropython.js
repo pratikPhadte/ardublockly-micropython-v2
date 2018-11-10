@@ -165,6 +165,8 @@ Blockly.Micropython.init = function (workspace) {
     Blockly.Micropython.PASS = this.INDENT + 'pass\n';
     // Create a dictionary of definitions to be printed at the top of the sketch
     Blockly.Micropython.imports_ = Object.create(null);
+    // Create a dictionary of definitions to be printed at the top of the sketch
+    Blockly.Micropython.setups_ = Object.create(null);
     // Create a dictionary of global definitions to be printed after variables
     Blockly.Micropython.definitions_ = Object.create(null);
     // Create a dictionary of global definitions to be printed after variables
@@ -195,10 +197,10 @@ Blockly.Micropython.init = function (workspace) {
     // Set variable declarations with their Micropython type in the defines dictionary
     for (var varName in varsWithTypes) {
         Blockly.Micropython.addVariable(varName,
-            Blockly.Micropython.getMicropythonType_(varsWithTypes[varName]) + ' ' +
-            Blockly.Micropython.variableDB_.getName(varName, Blockly.Variables.NAME_TYPE) + ';');
+            Blockly.Micropython.variableDB_.getName(varName, Blockly.Variables.NAME_TYPE) + ' = None');
     }
 };
+
 
 /**
  * Prepare all generated code to be placed in the sketch specific locations.
@@ -279,10 +281,11 @@ Blockly.Micropython.finish = function (code) {
 
     Blockly.Micropython.variableDB_.reset();
 
-    var defs = imports.join('\n') + variables.join('\n') +
-        definitions.join('\n') + declarations.join('\n') + functions.join('\n\n');
-    var setup = setups.join('\n') + '\n\n';
-    var body = code.replace(/\n/g, '\n');
+    var defs = imports.join('\n') +
+        definitions.join('\n') + declarations.join('\n') +
+        variables.join('\n') + functions.join('\n\n');
+    var setup = '\# Setup:\n' + setups.join('\n');
+    var body = '\# Body:\n' + code.replace(/\n/g, '\n');
     return defs + setup + body;
 };
 
@@ -473,22 +476,22 @@ Blockly.Micropython.scrub_ = function (block, code) {
  *     string format.
  * @private
  */
-Blockly.Micropython.getMicropythonType_ = function (typeBlockly) {
+Blockly.Micropython.getArduinoType_ = function (typeBlockly) {
     switch (typeBlockly.typeId) {
         case Blockly.Types.SHORT_NUMBER.typeId:
-            return 'char';
+            return 'int';
         case Blockly.Types.NUMBER.typeId:
             return 'int';
         case Blockly.Types.LARGE_NUMBER.typeId:
-            return 'long';
+            return 'int';
         case Blockly.Types.DECIMAL.typeId:
             return 'float';
         case Blockly.Types.TEXT.typeId:
-            return 'String';
+            return 'str';
         case Blockly.Types.CHARACTER.typeId:
-            return 'char';
+            return 'int';
         case Blockly.Types.BOOLEAN.typeId:
-            return 'boolean';
+            return 'int';
         case Blockly.Types.NULL.typeId:
             return 'void';
         case Blockly.Types.UNDEF.typeId:
