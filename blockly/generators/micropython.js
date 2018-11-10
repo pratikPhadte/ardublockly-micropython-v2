@@ -32,41 +32,104 @@ Blockly.Micropython.StaticTyping = new Blockly.StaticTyping();
  * @private
  */
 
-//Blockly.Micropython.addReservedWords(
-//    'Blockly,' +  // In case JS is evaled in the current window.
-//    'setup,loop,if,else,for,switch,case,while,do,break,continue,return,goto,' +
-//    'define,include,HIGH,LOW,INPUT,OUTPUT,INPUT_PULLUP,true,false,integer,' +
-//    'constants,floating,point,void,boolean,char,unsigned,byte,int,word,long,' +
-//    'float,double,string,String,array,static,volatile,const,sizeof,pinMode,' +
-//    'digitalWrite,digitalRead,analogReference,analogRead,analogWrite,tone,' +
-//    'noTone,shiftOut,shitIn,pulseIn,millis,micros,delay,delayMicroseconds,' +
-//    'min,max,abs,constrain,map,pow,sqrt,sin,cos,tan,randomSeed,random,' +
-//    'lowByte,highByte,bitRead,bitWrite,bitSet,bitClear,bit,attachInterrupt,' +
-//    'detachInterrupt,interrupts,noInterrupts');
-
 Blockly.Micropython.addReservedWords(
-    'Blockly,' +  // In case JS is evaled in the current window.
-    'setup,loop,if,else,for,switch,case,while,do,break,continue,return,goto,' +
-    'define,include,HIGH,LOW,INPUT,OUTPUT,INPUT_PULLUP,true,false,integer,' +
-    'from,import');
+    // import keyword
+    // print(','.join(sorted(keyword.kwlist)))
+    // https://docs.python.org/3/reference/lexical_analysis.html#keywords
+    // https://docs.python.org/2/reference/lexical_analysis.html#keywords
+    'False,None,True,and,as,assert,break,class,continue,def,del,elif,else,' +
+    'except,exec,finally,for,from,global,if,import,in,is,lambda,nonlocal,not,' +
+    'or,pass,print,raise,return,try,while,with,yield,' +
+    // https://docs.python.org/3/library/constants.html
+    // https://docs.python.org/2/library/constants.html
+    'NotImplemented,Ellipsis,__debug__,quit,exit,copyright,license,credits,' +
+    // >>> print(','.join(sorted(dir(__builtins__))))
+    // https://docs.python.org/3/library/functions.html
+    // https://docs.python.org/2/library/functions.html
+    'ArithmeticError,AssertionError,AttributeError,BaseException,' +
+    'BlockingIOError,BrokenPipeError,BufferError,BytesWarning,' +
+    'ChildProcessError,ConnectionAbortedError,ConnectionError,' +
+    'ConnectionRefusedError,ConnectionResetError,DeprecationWarning,EOFError,' +
+    'Ellipsis,EnvironmentError,Exception,FileExistsError,FileNotFoundError,' +
+    'FloatingPointError,FutureWarning,GeneratorExit,IOError,ImportError,' +
+    'ImportWarning,IndentationError,IndexError,InterruptedError,' +
+    'IsADirectoryError,KeyError,KeyboardInterrupt,LookupError,MemoryError,' +
+    'ModuleNotFoundError,NameError,NotADirectoryError,NotImplemented,' +
+    'NotImplementedError,OSError,OverflowError,PendingDeprecationWarning,' +
+    'PermissionError,ProcessLookupError,RecursionError,ReferenceError,' +
+    'ResourceWarning,RuntimeError,RuntimeWarning,StandardError,' +
+    'StopAsyncIteration,StopIteration,SyntaxError,SyntaxWarning,SystemError,' +
+    'SystemExit,TabError,TimeoutError,TypeError,UnboundLocalError,' +
+    'UnicodeDecodeError,UnicodeEncodeError,UnicodeError,' +
+    'UnicodeTranslateError,UnicodeWarning,UserWarning,ValueError,Warning,' +
+    'ZeroDivisionError,_,__build_class__,__debug__,__doc__,__import__,' +
+    '__loader__,__name__,__package__,__spec__,abs,all,any,apply,ascii,' +
+    'basestring,bin,bool,buffer,bytearray,bytes,callable,chr,classmethod,cmp,' +
+    'coerce,compile,complex,copyright,credits,delattr,dict,dir,divmod,' +
+    'enumerate,eval,exec,execfile,exit,file,filter,float,format,frozenset,' +
+    'getattr,globals,hasattr,hash,help,hex,id,input,int,intern,isinstance,' +
+    'issubclass,iter,len,license,list,locals,long,map,max,memoryview,min,' +
+    'next,object,oct,open,ord,pow,print,property,quit,range,raw_input,reduce,' +
+    'reload,repr,reversed,round,set,setattr,slice,sorted,staticmethod,str,' +
+    'sum,super,tuple,type,unichr,unicode,vars,xrange,zip'
+);
 
-/** Order of operation ENUMs. */
-Blockly.Micropython.ORDER_ATOMIC = 0;         // 0 "" ...
-Blockly.Micropython.ORDER_UNARY_POSTFIX = 1;  // expr++ expr-- () [] .
-Blockly.Micropython.ORDER_UNARY_PREFIX = 2;   // -expr !expr ~expr ++expr --expr
-Blockly.Micropython.ORDER_MULTIPLICATIVE = 3; // * / % ~/
-Blockly.Micropython.ORDER_ADDITIVE = 4;       // + -
-Blockly.Micropython.ORDER_SHIFT = 5;          // << >>
-Blockly.Micropython.ORDER_RELATIONAL = 6;     // >= > <= <
-Blockly.Micropython.ORDER_EQUALITY = 7;       // == != === !==
-Blockly.Micropython.ORDER_BITWISE_AND = 8;    // &
-Blockly.Micropython.ORDER_BITWISE_XOR = 9;    // ^
-Blockly.Micropython.ORDER_BITWISE_OR = 10;    // |
-Blockly.Micropython.ORDER_LOGICAL_AND = 11;   // &&
-Blockly.Micropython.ORDER_LOGICAL_OR = 12;    // ||
-Blockly.Micropython.ORDER_CONDITIONAL = 13;   // expr ? expr : expr
-Blockly.Micropython.ORDER_ASSIGNMENT = 14;    // = *= /= ~/= %= += -= <<= >>= &= ^= |=
-Blockly.Micropython.ORDER_NONE = 99;          // (...)
+
+/**
+ * Order of operation ENUMs.
+ * http://docs.python.org/reference/expressions.html#summary
+ */
+
+Blockly.Micropython.ORDER_ATOMIC = 0;            // 0 "" ...
+Blockly.Micropython.ORDER_COLLECTION = 1;        // tuples, lists, dictionaries
+Blockly.Micropython.ORDER_STRING_CONVERSION = 1; // `expression...`
+Blockly.Micropython.ORDER_MEMBER = 2.1;          // . []
+Blockly.Micropython.ORDER_FUNCTION_CALL = 2.2;   // ()
+Blockly.Micropython.ORDER_EXPONENTIATION = 3;    // **
+Blockly.Micropython.ORDER_UNARY_SIGN = 4;        // + -
+Blockly.Micropython.ORDER_BITWISE_NOT = 4;       // ~
+Blockly.Micropython.ORDER_MULTIPLICATIVE = 5;    // * / // %
+Blockly.Micropython.ORDER_ADDITIVE = 6;          // + -
+Blockly.Micropython.ORDER_BITWISE_SHIFT = 7;     // << >>
+Blockly.Micropython.ORDER_BITWISE_AND = 8;       // &
+Blockly.Micropython.ORDER_BITWISE_XOR = 9;       // ^
+Blockly.Micropython.ORDER_BITWISE_OR = 10;       // |
+Blockly.Micropython.ORDER_RELATIONAL = 11;       // in, not in, is, is not,
+//     <, <=, >, >=, <>, !=, ==
+Blockly.Micropython.ORDER_LOGICAL_NOT = 12;      // not
+Blockly.Micropython.ORDER_LOGICAL_AND = 13;      // and
+Blockly.Micropython.ORDER_LOGICAL_OR = 14;       // or
+Blockly.Micropython.ORDER_CONDITIONAL = 15;      // if else
+Blockly.Micropython.ORDER_LAMBDA = 16;           // lambda
+Blockly.Micropython.ORDER_NONE = 99;             // (...)
+
+
+///**
+// * List of outer-inner pairings that do NOT require parentheses.
+// * @type {!Array.<!Array.<number>>}
+// */
+//Blockly.Micropython.ORDER_OVERRIDES = [
+//    // (foo()).bar -> foo().bar
+//    // (foo())[0] -> foo()[0]
+//    [Blockly.Micropython.ORDER_FUNCTION_CALL, Blockly.Micropython.ORDER_MEMBER],
+//    // (foo())() -> foo()()
+//    [Blockly.Micropython.ORDER_FUNCTION_CALL, Blockly.Micropython.ORDER_FUNCTION_CALL],
+//    // (foo.bar).baz -> foo.bar.baz
+//    // (foo.bar)[0] -> foo.bar[0]
+//    // (foo[0]).bar -> foo[0].bar
+//    // (foo[0])[1] -> foo[0][1]
+//    [Blockly.Micropython.ORDER_MEMBER, Blockly.Micropython.ORDER_MEMBER],
+//    // (foo.bar)() -> foo.bar()
+//    // (foo[0])() -> foo[0]()
+//    [Blockly.Micropython.ORDER_MEMBER, Blockly.Micropython.ORDER_FUNCTION_CALL],
+
+//    // not (not foo) -> not not foo
+//    [Blockly.Micropython.ORDER_LOGICAL_NOT, Blockly.Micropython.ORDER_LOGICAL_NOT],
+//    // a and (b and c) -> a and b and c
+//    [Blockly.Micropython.ORDER_LOGICAL_AND, Blockly.Micropython.ORDER_LOGICAL_AND],
+//    // a or (b or c) -> a or b or c
+//    [Blockly.Micropython.ORDER_LOGICAL_OR, Blockly.Micropython.ORDER_LOGICAL_OR]
+//];
 
 /**
  * A list of types tasks that the pins can be assigned. Used to track usage and
@@ -96,10 +159,16 @@ Blockly.Micropython.DEF_FUNC_NAME = Blockly.Micropython.FUNCTION_NAME_PLACEHOLDE
  * @param {Blockly.Workspace} workspace Workspace to generate code from.
  */
 Blockly.Micropython.init = function (workspace) {
+    /**
+    * Empty loops or conditionals are not allowed in Micropython.
+    */
+    Blockly.Micropython.PASS = this.INDENT + 'pass\n';
     // Create a dictionary of definitions to be printed at the top of the sketch
     Blockly.Micropython.imports_ = Object.create(null);
     // Create a dictionary of global definitions to be printed after variables
     Blockly.Micropython.definitions_ = Object.create(null);
+    // Create a dictionary of global definitions to be printed after variables
+    Blockly.Micropython.declarations_ = Object.create(null);
     // Create a dictionary of variables
     Blockly.Micropython.variables_ = Object.create(null);
     // Create a dictionary of functions from the code generator
@@ -109,8 +178,6 @@ Blockly.Micropython.init = function (workspace) {
     // Create a dictionary mapping desired function names in definitions_
     // to actual function names (to avoid collisions with user functions)
     Blockly.Micropython.functionNames_ = Object.create(null);
-    // Create a dictionary of setups to be printed in the setup() function
-    Blockly.Micropython.setups_ = Object.create(null);
     // Create a dictionary of pins to check if their use conflicts
     Blockly.Micropython.pins_ = Object.create(null);
 
@@ -142,6 +209,8 @@ Blockly.Micropython.finish = function (code) {
     // Convert the includes, definitions, and functions dictionaries into lists
     var imports = [];
     var definitions = [];
+    var declarations = [];
+    var setups = [];
     var variables = [];
     var functions = [];
 
@@ -163,6 +232,18 @@ Blockly.Micropython.finish = function (code) {
     if (definitions.length) {
         definitions.push('\n');
     }
+    for (var name in Blockly.Micropython.declarations_) {
+        declarations.push(Blockly.Micropython.declarations_[name]);
+    }
+    if (declarations.length) {
+        declarations.push('\n');
+    }
+    for (var name in Blockly.Micropython.setups_) {
+        setups.push(Blockly.Micropython.setups_[name]);
+    }
+    if (setups.length) {
+        setups.push('\n');
+    }
     for (var name in Blockly.Micropython.codeFunctions_) {
         functions.push(Blockly.Micropython.codeFunctions_[name]);
     }
@@ -173,35 +254,36 @@ Blockly.Micropython.finish = function (code) {
         functions.push('\n');
     }
 
-    // userSetupCode added at the end of the setup function without leading spaces
-    var setups = [''], userSetupCode = '';
-    if (Blockly.Micropython.setups_['userSetupCode'] !== undefined) {
-        userSetupCode = '\n' + Blockly.Micropython.setups_['userSetupCode'];
-        delete Blockly.Micropython.setups_['userSetupCode'];
-    }
-    for (var name in Blockly.Micropython.setups_) {
-        setups.push(Blockly.Micropython.setups_[name]);
-    }
-    if (userSetupCode) {
-        setups.push(userSetupCode);
-    }
+    //// userSetupCode added at the end of the setup function without leading spaces
+    //var setups = [''], userSetupCode = '';
+    //if (Blockly.Micropython.setups_['userSetupCode'] !== undefined) {
+    //    userSetupCode = '\n' + Blockly.Micropython.setups_['userSetupCode'];
+    //    delete Blockly.Micropython.setups_['userSetupCode'];
+    //}
+    //for (var name in Blockly.Micropython.setups_) {
+    //    setups.push(Blockly.Micropython.setups_[name]);
+    //}
+    //if (userSetupCode) {
+    //    setups.push(userSetupCode);
+    //}
 
     // Clean up temporary data
     delete Blockly.Micropython.imports_;
     delete Blockly.Micropython.definitions_;
+    delete Blockly.Micropython.declarations_;
+    delete Blockly.Micropython.setups_;
     delete Blockly.Micropython.codeFunctions_;
     delete Blockly.Micropython.userFunctions_;
     delete Blockly.Micropython.functionNames_;
-    delete Blockly.Micropython.setups_;
     delete Blockly.Micropython.pins_;
 
     Blockly.Micropython.variableDB_.reset();
 
-    var allDefs = imports.join('\n') + variables.join('\n') +
-        definitions.join('\n') + functions.join('\n\n');
+    var defs = imports.join('\n') + variables.join('\n') +
+        definitions.join('\n') + declarations.join('\n') + functions.join('\n\n');
     var setup = setups.join('\n') + '\n\n';
-    var loop = code.replace(/\n/g, '\n');
-    return allDefs + setup + loop;
+    var body = code.replace(/\n/g, '\n');
+    return defs + setup + body;
 };
 
 /**
@@ -223,8 +305,8 @@ Blockly.Micropython.addImport = function (importTag, code) {
  * @param {!string} code Code to be added below the includes.
  */
 Blockly.Micropython.addDeclaration = function (declarationTag, code) {
-    if (Blockly.Micropython.definitions_[declarationTag] === undefined) {
-        Blockly.Micropython.definitions_[declarationTag] = code;
+    if (Blockly.Micropython.declarations_[declarationTag] === undefined) {
+        Blockly.Micropython.declarations_[declarationTag] = code;
     }
 };
 
@@ -241,24 +323,6 @@ Blockly.Micropython.addDefinition = function (definitionTag, code) {
 };
 
 /**
- * Adds a string of code to declare a variable globally to the sketch.
- * Only if overwrite option is set to true it will overwrite whatever
- * value the identifier held before.
- * @param {!string} varName The name of the variable to declare.
- * @param {!string} code Code to be added for the declaration.
- * @param {boolean=} overwrite Flag to ignore previously set value.
- * @return {!boolean} Indicates if the declaration overwrote a previous one.
- */
-Blockly.Micropython.addVariable = function (varName, code, overwrite) {
-    var overwritten = false;
-    if (overwrite || (Blockly.Micropython.variables_[varName] === undefined)) {
-        Blockly.Micropython.variables_[varName] = code;
-        overwritten = true;
-    }
-    return overwritten;
-};
-
-/**
  * Adds a string of code into the Micropython setup() function. It takes an
  * identifier to not repeat the same kind of initialisation code from several
  * blocks. If overwrite option is set to true it will overwrite whatever
@@ -272,6 +336,24 @@ Blockly.Micropython.addSetup = function (setupTag, code, overwrite) {
     var overwritten = false;
     if (overwrite || (Blockly.Micropython.setups_[setupTag] === undefined)) {
         Blockly.Micropython.setups_[setupTag] = code;
+        overwritten = true;
+    }
+    return overwritten;
+};
+
+/**
+ * Adds a string of code to declare a variable globally to the sketch.
+ * Only if overwrite option is set to true it will overwrite whatever
+ * value the identifier held before.
+ * @param {!string} varName The name of the variable to declare.
+ * @param {!string} code Code to be added for the declaration.
+ * @param {boolean=} overwrite Flag to ignore previously set value.
+ * @return {!boolean} Indicates if the declaration overwrote a previous one.
+ */
+Blockly.Micropython.addVariable = function (varName, code, overwrite) {
+    var overwritten = false;
+    if (overwrite || (Blockly.Micropython.variables_[varName] === undefined)) {
+        Blockly.Micropython.variables_[varName] = code;
         overwritten = true;
     }
     return overwritten;
