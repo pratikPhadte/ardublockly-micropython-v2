@@ -246,6 +246,7 @@ Blockly.Micropython['math_change'] = function (block) {
         ', Number) else 0) + ' + argument0 + '\n';
 };
 
+
 // Rounding functions have a single operand.
 Blockly.Micropython['math_round'] = Blockly.Micropython['math_single'];
 // Trigonometry functions have a single operand.

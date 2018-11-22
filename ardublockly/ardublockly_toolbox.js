@@ -55,60 +55,60 @@ Ardublockly.TOOLBOX_XML =
     '    <block type="math_number"></block>' +
     '    <block type="math_arithmetic"></block>' +
     '    <block type="math_single"></block>' +
-    //'    <block type="math_trig"></block>' +
+    '    <block type="math_trig"></block>' +
     '    <block type="math_constant"></block>' +
     '    <block type="math_number_property"></block>' +
-    //'    <block type="math_change">' +
-    //'      <value name="DELTA">' +
-    //'        <block type="math_number">' +
-    //'          <field name="NUM">1</field>' +
-    //'        </block>' +
-    //'      </value>' +
-    //'    </block>' +
-    //'    <block type="math_round"></block>' +
-    //'    <block type="math_modulo"></block>' +
-    //'    <block type="math_constrain">' +
-    //'      <value name="LOW">' +
-    //'        <block type="math_number">' +
-    //'          <field name="NUM">1</field>' +
-    //'        </block>' +
-    //'      </value>' +
-    //'      <value name="HIGH">' +
-    //'        <block type="math_number">' +
-    //'          <field name="NUM">100</field>' +
-    //'        </block>' +
-    //'      </value>' +
-    //'    </block>' +
-    //'    <block type="math_random_int">' +
-    //'      <value name="FROM">' +
-    //'        <block type="math_number">' +
-    //'          <field name="NUM">1</field>' +
-    //'        </block>' +
-    //'      </value>' +
-    //'      <value name="TO">' +
-    //'        <block type="math_number">' +
-    //'          <field name="NUM">100</field>' +
-    //'        </block>' +
-    //'      </value>' +
-    //'    </block>' +
-    //'    <block type="math_random_float"></block>' +
+    '    <block type="math_change">' +
+    '      <value name="DELTA">' +
+    '        <block type="math_number">' +
+    '          <field name="NUM">1</field>' +
+    '        </block>' +
+    '      </value>' +
+    '    </block>' +
+    '    <block type="math_round"></block>' +
+    '    <block type="math_modulo"></block>' +
+    '    <block type="math_constrain">' +
+    '      <value name="LOW">' +
+    '        <block type="math_number">' +
+    '          <field name="NUM">1</field>' +
+    '        </block>' +
+    '      </value>' +
+    '      <value name="HIGH">' +
+    '        <block type="math_number">' +
+    '          <field name="NUM">100</field>' +
+    '        </block>' +
+    '      </value>' +
+    '    </block>' +
+    '    <block type="math_random_int">' +
+    '      <value name="FROM">' +
+    '        <block type="math_number">' +
+    '          <field name="NUM">1</field>' +
+    '        </block>' +
+    '      </value>' +
+    '      <value name="TO">' +
+    '        <block type="math_number">' +
+    '          <field name="NUM">100</field>' +
+    '        </block>' +
+    '      </value>' +
+    '    </block>' +
+    '    <block type="math_random_float"></block>' +
     //'    <block type="base_map"></block>' +
     '  </category>' +
     '  <sep></sep>' +
-    //'  <category id="catText" name="Text">' +
-    //'    <block type="text"></block>' +
-    //'    <block type="text_join"></block>' +
-    //'    <block type="text_append">' +
-    //'      <value name="TEXT">' +
-    //'        <block type="text"></block>' +
-    //'      </value>' +
-    //'    </block>' +
-    //'    <block type="text_length"></block>' +
-    //'    <block type="text_isEmpty"></block>' +
-    ////'    <!--block type="text_trim"></block Need to update block -->' +
-    ////'    <!--block type="text_print"></block Part of the serial comms -->' +
-    //'  </category>' +
-    //'  <sep></sep>' +
+    '  <category id="catText" name="Text">' +
+    '    <block type="text"></block>' +
+    '    <block type="text_join"></block>' +
+    '    <block type="text_append">' +
+    '      <value name="TEXT">' +
+    '        <block type="text"></block>' +
+    '      </value>' +
+    '    </block>' +
+    '    <block type="text_length"></block>' +
+    '    <block type="text_isEmpty"></block>' +
+    //'    <!--block type="text_trim"></block Need to update block -->' +
+    //'    <!--block type="text_print"></block Part of the serial comms -->' +
+    '  </category>' +
+    '  <sep></sep>' +
     '  <category id="catVariables" name="Variables">' +
     '    <block type="variables_get"></block>' +
     '    <block type="variables_set"></block>' +

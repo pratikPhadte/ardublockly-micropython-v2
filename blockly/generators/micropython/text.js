@@ -20,115 +20,129 @@ goog.provide('Blockly.Micropython.text');
 goog.require('Blockly.Micropython');
 
 
-///**
-// * Code generator for a literal String (X).
-// * Arduino code: loop { "X" }
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {array} Completed code with order of operation.
-// */
-//Blockly.Micropython['text'] = function(block) {
-//  var code = Blockly.Micropython.quote_(block.getFieldValue('TEXT'));
-//  return [code, Blockly.Micropython.ORDER_ATOMIC];
-//};
+/**
+ * Code generator for a literal String (X).
+ * Arduino code: loop { "X" }
+ * @param {!Blockly.Block} block Block to generate the code from.
+ * @return {array} Completed code with order of operation.
+ */
+Blockly.Micropython['text'] = function (block) {
+    // Text value.
+    var code = Blockly.Micropython.quote_(block.getFieldValue('TEXT'));
+    return [code, Blockly.Micropython.ORDER_ATOMIC];
+};
 
-///**
-// * Code generator for a String concatenation (X...Y). This string can be made
-// * up of any number of elements of any type.
-// * This block uses a mutator.
-// * String construction info: http://arduino.cc/en/Reference/StringConstructor
-// * Arduino code: loop { "String(X)" + ... + "String(Y)" }
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {array} Completed code with order of operation.
-// */
-//Blockly.Micropython['text_join'] = function(block) {
-//  var code;
-//  if (block.itemCount_ == 0) {
-//    return ['""', Blockly.Micropython.ORDER_ATOMIC];
-//  } else if (block.itemCount_ == 1) {
-//    var argument0 = Blockly.Micropython.valueToCode(block, 'ADD0',
-//        Blockly.Micropython.ORDER_UNARY_POSTFIX) || '""';
-//    code = 'String(' + argument0 + ')';
-//    return [code, Blockly.Micropython.ORDER_UNARY_POSTFIX];
-//  } else {
-//    var argument;
-//    code = [];
-//    for (var n = 0; n < block.itemCount_; n++) {
-//      argument = Blockly.Micropython.valueToCode(
-//          block, 'ADD' + n, Blockly.Micropython.ORDER_NONE);
-//      if (argument == '') {
-//        code[n] = '""';
-//      } else {
-//        code[n] = 'String(' + argument + ')';
-//      }
-//    }
-//    code = code.join(' + ');
-//    return [code, Blockly.Micropython.ORDER_UNARY_POSTFIX];
-//  }
-//};
+/**
+ * Enclose the provided value in 'str(...)' function.
+ * Leave string literals alone.
+ * @param {string} value Code evaluating to a value.
+ * @return {string} Code evaluating to a string.
+ * @private
+ */
+Blockly.Micropython.text.forceString_ = function (value) {
+    if (Blockly.Micropython.text.forceString_.strRegExp.test(value)) {
+        return value;
+    }
+    return 'str(' + value + ')';
+};
 
-///**
-// * Code generator for appending text (Y) to a variable in place (X).
-// * String constructor info: http://arduino.cc/en/Reference/StringConstructor
-// * Arduino code: loop { X += String(Y) }
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {string} Completed code.
-// */
-//Blockly.Micropython['text_append'] = function(block) {
-//  // Append to a variable in place.
-//  var varName = Blockly.Micropython.variableDB_.getName(
-//      block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
-//  var argument0 = Blockly.Micropython.valueToCode(block, 'TEXT',
-//      Blockly.Micropython.ORDER_UNARY_POSTFIX);
-//  if (argument0 == '') {
-//    argument0 = '""';
-//  } else {
-//    argument0 = 'String(' + argument0 + ')';
-//  }
-//  return varName + ' += ' + argument0 + ';\n';
-//};
+/**
+ * Regular expression to detect a single-quoted string literal.
+ */
+Blockly.Micropython.text.forceString_.strRegExp = /^\s*'([^']|\\')*'\s*$/;
 
-///**
-// * Code generator to get the length of a string (X).
-// * String length info: http://arduino.cc/en/Reference/StringLength
-// * Arduino code: loop { String(X).length() }
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {array} Completed code with order of operation.
-// */
-//Blockly.Micropython['text_length'] = function(block) {
-//  var argument0 = Blockly.Micropython.valueToCode(block, 'VALUE',
-//      Blockly.Micropython.ORDER_UNARY_POSTFIX) || '""';
-//  var code = 'String(' + argument0 + ').length()';
-//  return [code, Blockly.Micropython.ORDER_UNARY_POSTFIX];
-//};
+/**
+ * Code generator for a String concatenation (X...Y). This string can be made
+ * up of any number of elements of any type.
+ * This block uses a mutator.
+ * String construction info: http://arduino.cc/en/Reference/StringConstructor
+ * Arduino code: loop { "String(X)" + ... + "String(Y)" }
+ * @param {!Blockly.Block} block Block to generate the code from.
+ * @return {array} Completed code with order of operation.
+ */
 
-///**
-// * Code generator to test if a string (X) is null/empty.
-// * String length info: http://arduino.cc/en/Reference/StringLength
-// * Arduino code: boolean isStringEmpty(...) { ... }
-// *               loop { isStringEmpty(X) }
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {array} Completed code with order of operation.
-// */
-//Blockly.Micropython['text_isEmpty'] = function(block) {
-//  var func = [];
-//  func.push('boolean ' + Blockly.Micropython.DEF_FUNC_NAME + '(String msg) {');
-//  func.push('  if (msg.length() == 0) {');
-//  func.push('    return true;');
-//  func.push('  } else {');
-//  func.push('    return false;');
-//  func.push('  }');
-//  func.push('}');
-//  var funcName = Blockly.Micropython.addFunction('isStringEmpty', func.join('\n'));
-//  var argument0 = Blockly.Micropython.valueToCode(block, 'VALUE',
-//      Blockly.Micropython.ORDER_UNARY_POSTFIX);
-//  if (argument0 == '') {
-//    argument0 = '""';
-//  } else {
-//    argument0 = 'String(' + argument0 + ')';
-//  }
-//  var code = funcName + '(' + argument0 + ')';
-//  return [code, Blockly.Micropython.ORDER_UNARY_POSTFIX];
-//};
+Blockly.Micropython['text_join'] = function (block) {
+    // Create a string made up of any number of elements of any type.
+    //Should we allow joining by '-' or ',' or any other characters?
+    switch (block.itemCount_) {
+        case 0:
+            return ['\'\'', Blockly.Micropython.ORDER_ATOMIC];
+            break;
+        case 1:
+            var element = Blockly.Micropython.valueToCode(block, 'ADD0',
+                Blockly.Micropython.ORDER_NONE) || '\'\'';
+            var code = Blockly.Micropython.text.forceString_(element);
+            return [code, Blockly.Micropython.ORDER_FUNCTION_CALL];
+            break;
+        case 2:
+            var element0 = Blockly.Micropython.valueToCode(block, 'ADD0',
+                Blockly.Micropython.ORDER_NONE) || '\'\'';
+            var element1 = Blockly.Micropython.valueToCode(block, 'ADD1',
+                Blockly.Micropython.ORDER_NONE) || '\'\'';
+            var code = Blockly.Micropython.text.forceString_(element0) + ' + ' +
+                Blockly.Micropython.text.forceString_(element1);
+            return [code, Blockly.Micropython.ORDER_ADDITIVE];
+            break;
+        default:
+            var elements = [];
+            for (var i = 0; i < block.itemCount_; i++) {
+                elements[i] = Blockly.Micropython.valueToCode(block, 'ADD' + i,
+                    Blockly.Micropython.ORDER_NONE) || '\'\'';
+            }
+            var tempVar = Blockly.Micropython.variableDB_.getDistinctName('x',
+                Blockly.Variables.NAME_TYPE);
+            var code = '\'\'.join([str(' + tempVar + ') for ' + tempVar + ' in [' +
+                elements.join(', ') + ']])';
+            return [code, Blockly.Micropython.ORDER_FUNCTION_CALL];
+    }
+};
+
+/**
+ * Code generator for appending text (Y) to a variable in place (X).
+ * String constructor info: http://arduino.cc/en/Reference/StringConstructor
+ * Arduino code: loop { X += String(Y) }
+ * @param {!Blockly.Block} block Block to generate the code from.
+ * @return {string} Completed code.
+ */
+Blockly.Micropython['text_append'] = function (block) {
+    // Append to a variable in place.
+    var varName = Blockly.Micropython.variableDB_.getName(block.getFieldValue('VAR'),
+        Blockly.Variables.NAME_TYPE);
+    var value = Blockly.Micropython.valueToCode(block, 'TEXT',
+        Blockly.Micropython.ORDER_NONE) || '\'\'';
+    return varName + ' = str(' + varName + ') + ' +
+        Blockly.Micropython.text.forceString_(value) + '\n';
+};
+
+/**
+ * Code generator to get the length of a string (X).
+ * String length info: http://arduino.cc/en/Reference/StringLength
+ * Arduino code: loop { String(X).length() }
+ * @param {!Blockly.Block} block Block to generate the code from.
+ * @return {array} Completed code with order of operation.
+ */
+Blockly.Micropython['text_length'] = function (block) {
+    // Is the string null or array empty?
+    var text = Blockly.Micropython.valueToCode(block, 'VALUE',
+        Blockly.Micropython.ORDER_NONE) || '\'\'';
+    return ['len(' + text + ')', Blockly.Micropython.ORDER_FUNCTION_CALL];
+};
+
+/**
+ * Code generator to test if a string (X) is null/empty.
+ * String length info: http://arduino.cc/en/Reference/StringLength
+ * Arduino code: boolean isStringEmpty(...) { ... }
+ *               loop { isStringEmpty(X) }
+ * @param {!Blockly.Block} block Block to generate the code from.
+ * @return {array} Completed code with order of operation.
+ */
+Blockly.Micropython['text_isEmpty'] = function (block) {
+    // Is the string null or array empty?
+    var text = Blockly.Micropython.valueToCode(block, 'VALUE',
+        Blockly.Micropython.ORDER_NONE) || '\'\'';
+    var code = 'not len(' + text + ')';
+    return [code, Blockly.Micropython.ORDER_LOGICAL_NOT];
+};
 
 ///**
 // * Code generator to trim spaces from a string (X).
@@ -137,23 +151,23 @@ goog.require('Blockly.Micropython');
 // * @param {!Blockly.Block} block Block to generate the code from.
 // * @return {array} Completed code with order of operation.
 // */
-//Blockly.Micropython['text_trim'] = function(block) {
+//Blockly.Arduino['text_trim'] = function(block) {
 //  // Trim spaces.
-//  Blockly.Micropython.text_trim.OPERATORS = {
+//  Blockly.Arduino.text_trim.OPERATORS = {
 //    LEFT: '.trim()',
 //    RIGHT: '.trim()',
 //    BOTH: '.trim()'
 //  };
 //  var mode = block.getFieldValue('MODE');
-//  var operator = Blockly.Micropython.text_trim.OPERATORS[mode];
-//  var argument0 = Blockly.Micropython.valueToCode(block, 'TEXT',
-//      Blockly.Micropython.ORDER_UNARY_POSTFIX);
+//  var operator = Blockly.Arduino.text_trim.OPERATORS[mode];
+//  var argument0 = Blockly.Arduino.valueToCode(block, 'TEXT',
+//      Blockly.Arduino.ORDER_UNARY_POSTFIX);
 //  if (argument0 == '') {
 //    argument0 = '""';
 //  } else {
 //    argument0 = 'String(' + argument0 + ')';
 //  }
-//  return [argument0 + operator, Blockly.Micropython.ORDER_UNARY_POSTFIX];
+//  return [argument0 + operator, Blockly.Arduino.ORDER_UNARY_POSTFIX];
 //};
 
 ///**
@@ -164,12 +178,12 @@ goog.require('Blockly.Micropython');
 // * @param {!Blockly.Block} block Block to generate the code from.
 // * @return {string} Completed code.
 // */
-//Blockly.Micropython['text_print'] = function(block) {
-//  var serialId = Blockly.Micropython.Boards.selected.serial[0][1];
+//Blockly.Arduino['text_print'] = function(block) {
+//  var serialId = Blockly.Arduino.Boards.selected.serial[0][1];
 //  var setupCode = serialId + '.begin(9600);';
-//  Blockly.Micropython.addSetup('serial_' + serialId, setupCode, false);
-//  var argument0 = Blockly.Micropython.valueToCode(block, 'TEXT',
-//      Blockly.Micropython.ORDER_NONE);
+//  Blockly.Arduino.addSetup('serial_' + serialId, setupCode, false);
+//  var argument0 = Blockly.Arduino.valueToCode(block, 'TEXT',
+//      Blockly.Arduino.ORDER_NONE);
 //  if (argument0 == '') {
 //    argument0 = '""';
 //  } else {
@@ -186,18 +200,18 @@ goog.require('Blockly.Micropython');
 // * @param {!Blockly.Block} block Block to generate the code from.
 // * @return {array} Completed code with order of operation.
 // */
-//Blockly.Micropython['text_prompt_ext'] = function(block) {
+//Blockly.Arduino['text_prompt_ext'] = function(block) {
 //  // Get the first Serial peripheral of arduino board
-//  var serialId = Blockly.Micropython.Boards.selected.serial[0][1];
+//  var serialId = Blockly.Arduino.Boards.selected.serial[0][1];
 //  var returnType = block.getFieldValue('TYPE');
 
 //  // The function code changes based on reading a number or string
 //  var func = [];
 //  var toNumber = returnType == Blockly.Types.NUMBER.output;
 //  if (toNumber) {
-//    func.push('int ' + Blockly.Micropython.DEF_FUNC_NAME + '(String msg) {');
+//    func.push('int ' + Blockly.Arduino.DEF_FUNC_NAME + '(String msg) {');
 //  } else {
-//    func.push('String ' + Blockly.Micropython.DEF_FUNC_NAME + '(String msg) {');
+//    func.push('String ' + Blockly.Arduino.DEF_FUNC_NAME + '(String msg) {');
 //  }
 //  func.push('  ' + serialId + '.println(msg);');
 //  func.push('  boolean stringComplete = false;');
@@ -225,18 +239,18 @@ goog.require('Blockly.Micropython');
 //  func.push('  while(Serial.available()) { Serial.read(); };');
 //  func.push('  return content;');
 //  func.push('}');
-//  var funcName = Blockly.Micropython.addFunction(
+//  var funcName = Blockly.Arduino.addFunction(
 //      'getUserInputPrompt' + returnType, func.join('\n'));
 
 //  // Only overwrite the serial set up if not present already
 //  var setupCode = serialId + '.begin(9600);';
-//  Blockly.Micropython.addSetup('serial_' + serialId, setupCode, false);
+//  Blockly.Arduino.addSetup('serial_' + serialId, setupCode, false);
 
-//  var msg = Blockly.Micropython.valueToCode(block, 'TEXT',
-//      Blockly.Micropython.ORDER_NONE) || '""';
+//  var msg = Blockly.Arduino.valueToCode(block, 'TEXT',
+//      Blockly.Arduino.ORDER_NONE) || '""';
 //  var code = funcName + '(' + msg + ')';
 
-//  return [code, Blockly.Micropython.ORDER_UNARY_POSTFIX];
+//  return [code, Blockly.Arduino.ORDER_UNARY_POSTFIX];
 //};
 
 
@@ -244,26 +258,26 @@ goog.require('Blockly.Micropython');
 // * The rest of the blocks have been left unimplemented, as they have *
 // * been removed from the toolbox and not used for Arduino code.      *
 // * ***************************************************************** */
-//Blockly.Micropython['text_endString'] = function(block) {
-//  return ['', Blockly.Micropython.ORDER_UNARY_POSTFIX];
+//Blockly.Arduino['text_endString'] = function(block) {
+//  return ['', Blockly.Arduino.ORDER_UNARY_POSTFIX];
 //};
 
-//Blockly.Micropython['text_indexOf'] = function(block) {
-//  return ['', Blockly.Micropython.ORDER_UNARY_POSTFIX];
+//Blockly.Arduino['text_indexOf'] = function(block) {
+//  return ['', Blockly.Arduino.ORDER_UNARY_POSTFIX];
 //};
 
-//Blockly.Micropython['text_charAt'] = function(block) {
-//  return ['', Blockly.Micropython.ORDER_UNARY_POSTFIX];
+//Blockly.Arduino['text_charAt'] = function(block) {
+//  return ['', Blockly.Arduino.ORDER_UNARY_POSTFIX];
 //};
 
-//Blockly.Micropython['text_getSubstring'] = function(block) {
-//  return ['', Blockly.Micropython.ORDER_UNARY_POSTFIX];
+//Blockly.Arduino['text_getSubstring'] = function(block) {
+//  return ['', Blockly.Arduino.ORDER_UNARY_POSTFIX];
 //};
 
-//Blockly.Micropython['text_changeCase'] = function(block) {
-//  return ['', Blockly.Micropython.ORDER_UNARY_POSTFIX];
+//Blockly.Arduino['text_changeCase'] = function(block) {
+//  return ['', Blockly.Arduino.ORDER_UNARY_POSTFIX];
 //};
 
-//Blockly.Micropython['text_prompt'] = function(block) {
-//  return ['', Blockly.Micropython.ORDER_UNARY_POSTFIX];
+//Blockly.Arduino['text_prompt'] = function(block) {
+//  return ['', Blockly.Arduino.ORDER_UNARY_POSTFIX];
 //};
