@@ -13,13 +13,13 @@ Ardublockly.TOOLBOX_XML =
     '<xml>' +
     '  <sep></sep>' +
     '  <category id="catLogic" name="Logic">' +
-    //'    <block type="controls_if"></block>' +
-    //'    <block type="logic_compare"></block>' +
-    //'    <block type="logic_operation"></block>' +
-    //'    <block type="logic_negate"></block>' +
+    '    <block type="controls_if"></block>' +
+    '    <block type="logic_compare"></block>' +
+    '    <block type="logic_operation"></block>' +
+    '    <block type="logic_negate"></block>' +
     '    <block type="logic_boolean"></block>' +
-    //'    <block type="logic_null"></block>' +
-    //'    <block type="logic_ternary"></block>' +
+    '    <block type="logic_null"></block>' +
+    '    <block type="logic_ternary"></block>' +
     '  </category>' +
     '  <sep></sep>' +
     '  <category id="catLoops" name="Loops">' +
