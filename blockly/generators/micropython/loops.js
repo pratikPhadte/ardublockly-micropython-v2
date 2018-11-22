@@ -14,54 +14,46 @@ goog.provide('Blockly.Micropython.loops');
 
 goog.require('Blockly.Micropython');
 
+/**
+ * Generator for the repeat block (using external number block) using a
+ * For loop statement.
+ * Arduino code: loop { for (int count = 0; count < X; count++) { Y } }
+ * @param {!Blockly.Block} block Block to generate the code from.
+ * @return {string} Completed code.
+ */
+Blockly.Micropython['controls_repeat_ext'] = function (block) {
+    // Repeat n times.
+    if (block.getField('TIMES')) {
+        // Internal number.
+        var repeats = String(parseInt(block.getFieldValue('TIMES'), 10));
+    } else {
+        // External number.
+        var repeats = Blockly.Micropython.valueToCode(block, 'TIMES',
+            Blockly.Micropython.ORDER_NONE) || '0';
+    }
+    if (Blockly.isNumber(repeats)) {
+        repeats = parseInt(repeats, 10);
+    } else {
+        repeats = 'int(' + repeats + ')';
+    }
+    var branch = Blockly.Micropython.statementToCode(block, 'DO');
+    branch = Blockly.Micropython.addLoopTrap(branch, block.id) ||
+        Blockly.Micropython.PASS;
+    var loopVar = Blockly.Micropython.variableDB_.getDistinctName(
+        'count', Blockly.Variables.NAME_TYPE);
+    var code = 'for ' + loopVar + ' in range(' + repeats + '):\n' + branch;
+    return code;
+};
 
-///**
-// * Generator for the repeat block (number in a drop down) using a For loop
-// * statement.
-// * Arduino code: loop { for (int count = 0; count < X; count++) { Y } }
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {string} Completed code.
-// */
-//Blockly.Micropython['controls_repeat'] = function (block) {
-//    var repeats = Number(block.getFieldValue('TIMES'));
-//    var branch = Blockly.Micropython.statementToCode(block, 'DO');
-//    branch = Blockly.Micropython.addLoopTrap(branch, block.id);
-//    var loopVar = Blockly.Micropython.variableDB_.getDistinctName(
-//        'count', Blockly.Variables.NAME_TYPE);
-//    var code = 'for (int ' + loopVar + ' = 0; ' +
-//        loopVar + ' < ' + repeats + '; ' +
-//        loopVar + '++) {\n' +
-//        branch + '}\n';
-//    return code;
-//};
+/**
+ * Generator for the repeat block (number in a drop down) using a For loop
+ * statement.
+ * Arduino code: loop { for (int count = 0; count < X; count++) { Y } }
+ * @param {!Blockly.Block} block Block to generate the code from.
+ * @return {string} Completed code.
+ */
+Blockly.Micropython['controls_repeat'] = Blockly.Micropython['controls_repeat_ext'];
 
-///**
-// * Generator for the repeat block (using external number block) using a
-// * For loop statement.
-// * Arduino code: loop { for (int count = 0; count < X; count++) { Y } }
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {string} Completed code.
-// */
-//Blockly.Micropython['controls_repeat_ext'] = function (block) {
-//    var repeats = Blockly.Micropython.valueToCode(block, 'TIMES',
-//        Blockly.Micropython.ORDER_ADDITIVE) || '0';
-//    var branch = Blockly.Micropython.statementToCode(block, 'DO');
-//    branch = Blockly.Micropython.addLoopTrap(branch, block.id);
-//    var code = '';
-//    var loopVar = Blockly.Micropython.variableDB_.getDistinctName(
-//        'count', Blockly.Variables.NAME_TYPE);
-//    var endVar = repeats;
-//    if (!repeats.match(/^\w+$/) && !Blockly.isNumber(repeats)) {
-//        var endVar = Blockly.Micropython.variableDB_.getDistinctName(
-//            'repeat_end', Blockly.Variables.NAME_TYPE);
-//        code += 'int ' + endVar + ' = ' + repeats + ';\n';
-//    }
-//    code += 'for (int ' + loopVar + ' = 0; ' +
-//        loopVar + ' < ' + endVar + '; ' +
-//        loopVar + '++) {\n' +
-//        branch + '}\n';
-//    return code;
-//};
 
 /**
  * Generator for the repeat while block using a While statement.
@@ -87,75 +79,127 @@ Blockly.Micropython['controls_whileUntil'] = function (block) {
     return 'while ' + argument0 + ':\n' + branch;
 };
 
-///**
-// * Generator for the For loop statements.
-// * Arduino code: loop { for (i = X; i <= Y; i+=Z) { } }
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {string} Completed code.
-// */
-//Blockly.Micropython['controls_for'] = function (block) {
-//    var variable0 = Blockly.Micropython.variableDB_.getName(
-//        block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
-//    var argument0 = Blockly.Micropython.valueToCode(block, 'FROM',
-//        Blockly.Micropython.ORDER_ASSIGNMENT) || '0';
-//    var argument1 = Blockly.Micropython.valueToCode(block, 'TO',
-//        Blockly.Micropython.ORDER_ASSIGNMENT) || '0';
-//    var increment = Blockly.Micropython.valueToCode(block, 'BY',
-//        Blockly.Micropython.ORDER_ASSIGNMENT) || '1';
-//    var branch = Blockly.Micropython.statementToCode(block, 'DO');
-//    branch = Blockly.Micropython.addLoopTrap(branch, block.id);
-//    var code;
-//    if (Blockly.isNumber(argument0) && Blockly.isNumber(argument1) &&
-//        Blockly.isNumber(increment)) {
-//        // All arguments are simple numbers.
-//        var up = parseFloat(argument0) <= parseFloat(argument1);
-//        code = 'for (' + variable0 + ' = ' + argument0 + '; ' +
-//            variable0 + (up ? ' <= ' : ' >= ') + argument1 + '; ' +
-//            variable0;
-//        var step = Math.abs(parseFloat(increment));
-//        if (step == 1) {
-//            code += up ? '++' : '--';
-//        } else {
-//            code += (up ? ' += ' : ' -= ') + step;
-//        }
-//        code += ') {\n' + branch + '}\n';
-//    } else {
-//        code = '';
-//        // Cache non-trivial values to variables to prevent repeated look-ups.
-//        var startVar = argument0;
-//        if (!argument0.match(/^\w+$/) && !Blockly.isNumber(argument0)) {
-//            var startVar = Blockly.Micropython.variableDB_.getDistinctName(
-//                variable0 + '_start', Blockly.Variables.NAME_TYPE);
-//            code += 'int ' + startVar + ' = ' + argument0 + ';\n';
-//        }
-//        var endVar = argument1;
-//        if (!argument1.match(/^\w+$/) && !Blockly.isNumber(argument1)) {
-//            var endVar = Blockly.Micropython.variableDB_.getDistinctName(
-//                variable0 + '_end', Blockly.Variables.NAME_TYPE);
-//            code += 'int ' + endVar + ' = ' + argument1 + ';\n';
-//        }
-//        // Determine loop direction at start, in case one of the bounds
-//        // changes during loop execution.
-//        var incVar = Blockly.Micropython.variableDB_.getDistinctName(
-//            variable0 + '_inc', Blockly.Variables.NAME_TYPE);
-//        code += 'int ' + incVar + ' = ';
-//        if (Blockly.isNumber(increment)) {
-//            code += Math.abs(increment) + ';\n';
-//        } else {
-//            code += 'abs(' + increment + ');\n';
-//        }
-//        code += 'if (' + startVar + ' > ' + endVar + ') {\n';
-//        code += Blockly.Micropython.INDENT + incVar + ' = -' + incVar + ';\n';
-//        code += '}\n';
-//        code += 'for (' + variable0 + ' = ' + startVar + ';\n' +
-//            '     ' + incVar + ' >= 0 ? ' +
-//            variable0 + ' <= ' + endVar + ' : ' +
-//            variable0 + ' >= ' + endVar + ';\n' +
-//            '     ' + variable0 + ' += ' + incVar + ') {\n' +
-//            branch + '}\n';
-//    }
-//    return code;
-//};
+/**
+ * Generator for the For loop statements.
+ * Arduino code: loop { for (i = X; i <= Y; i+=Z) { } }
+ * @param {!Blockly.Block} block Block to generate the code from.
+ * @return {string} Completed code.
+ */
+Blockly.Micropython['controls_for'] = function (block) {
+    // For loop.
+    var variable0 = Blockly.Micropython.variableDB_.getName(
+        block.getFieldValue('VAR'), Blockly.Variables.NAME_TYPE);
+    var argument0 = Blockly.Micropython.valueToCode(block, 'FROM',
+        Blockly.Micropython.ORDER_NONE) || '0';
+    var argument1 = Blockly.Micropython.valueToCode(block, 'TO',
+        Blockly.Micropython.ORDER_NONE) || '0';
+    var increment = Blockly.Micropython.valueToCode(block, 'BY',
+        Blockly.Micropython.ORDER_NONE) || '1';
+    var branch = Blockly.Micropython.statementToCode(block, 'DO');
+    branch = Blockly.Micropython.addLoopTrap(branch, block.id) ||
+        Blockly.Micropython.PASS;
+
+    var code = '';
+    var range;
+
+    // Helper functions.
+    var defineUpRange = function () {
+        return Blockly.Micropython.provideFunction_(
+            'upRange',
+            ['def ' + Blockly.Micropython.FUNCTION_NAME_PLACEHOLDER_ +
+                '(start, stop, step):',
+                '  while start <= stop:',
+                '    yield start',
+                '    start += abs(step)']);
+    };
+    var defineDownRange = function () {
+        return Blockly.Micropython.provideFunction_(
+            'downRange',
+            ['def ' + Blockly.Micropython.FUNCTION_NAME_PLACEHOLDER_ +
+                '(start, stop, step):',
+                '  while start >= stop:',
+                '    yield start',
+                '    start -= abs(step)']);
+    };
+    // Arguments are legal Python code (numbers or strings returned by scrub()).
+    var generateUpDownRange = function (start, end, inc) {
+        return '(' + start + ' <= ' + end + ') and ' +
+            defineUpRange() + '(' + start + ', ' + end + ', ' + inc + ') or ' +
+            defineDownRange() + '(' + start + ', ' + end + ', ' + inc + ')';
+    };
+
+    if (Blockly.isNumber(argument0) && Blockly.isNumber(argument1) &&
+        Blockly.isNumber(increment)) {
+        // All parameters are simple numbers.
+        argument0 = parseFloat(argument0);
+        argument1 = parseFloat(argument1);
+        increment = Math.abs(parseFloat(increment));
+        if (argument0 % 1 === 0 && argument1 % 1 === 0 && increment % 1 === 0) {
+            // All parameters are integers.
+            if (argument0 <= argument1) {
+                // Count up.
+                argument1++;
+                if (argument0 == 0 && increment == 1) {
+                    // If starting index is 0, omit it.
+                    range = argument1;
+                } else {
+                    range = argument0 + ', ' + argument1;
+                }
+                // If increment isn't 1, it must be explicit.
+                if (increment != 1) {
+                    range += ', ' + increment;
+                }
+            } else {
+                // Count down.
+                argument1--;
+                range = argument0 + ', ' + argument1 + ', -' + increment;
+            }
+            range = 'range(' + range + ')';
+        } else {
+            // At least one of the parameters is not an integer.
+            if (argument0 < argument1) {
+                range = defineUpRange();
+            } else {
+                range = defineDownRange();
+            }
+            range += '(' + argument0 + ', ' + argument1 + ', ' + increment + ')';
+        }
+    } else {
+        // Cache non-trivial values to variables to prevent repeated look-ups.
+        var scrub = function (arg, suffix) {
+            if (Blockly.isNumber(arg)) {
+                // Simple number.
+                arg = parseFloat(arg);
+            } else if (arg.match(/^\w+$/)) {
+                // Variable.
+                arg = 'float(' + arg + ')';
+            } else {
+                // It's complicated.
+                var varName = Blockly.Micropython.variableDB_.getDistinctName(
+                    variable0 + suffix, Blockly.Variables.NAME_TYPE);
+                code += varName + ' = float(' + arg + ')\n';
+                arg = varName;
+            }
+            return arg;
+        };
+        var startVar = scrub(argument0, '_start');
+        var endVar = scrub(argument1, '_end');
+        var incVar = scrub(increment, '_inc');
+
+        if (typeof startVar == 'number' && typeof endVar == 'number') {
+            if (startVar < endVar) {
+                range = defineUpRange(startVar, endVar, increment);
+            } else {
+                range = defineDownRange(startVar, endVar, increment);
+            }
+        } else {
+            // We cannot determine direction statically.
+            range = generateUpDownRange(startVar, endVar, increment);
+        }
+    }
+    code += 'for ' + variable0 + ' in ' + range + ':\n' + branch;
+    return code;
+};
 
 ///**
 // * A "for each" block.
@@ -165,18 +209,19 @@ Blockly.Micropython['controls_whileUntil'] = function (block) {
 // */
 //Blockly.Micropython['controls_forEach'] = Blockly.Micropython.noGeneratorCodeLine;
 
-///**
-// * Generator for the loop flow control statements.
-// * Arduino code: loop { break;/continue; }
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {string} Completed code.
-// */
-//Blockly.Micropython['controls_flow_statements'] = function (block) {
-//    switch (block.getFieldValue('FLOW')) {
-//        case 'BREAK':
-//            return 'break;\n';
-//        case 'CONTINUE':
-//            return 'continue;\n';
-//    }
-//    throw 'Unknown flow statement.';
-//};
+/**
+ * Generator for the loop flow control statements.
+ * Arduino code: loop { break;/continue; }
+ * @param {!Blockly.Block} block Block to generate the code from.
+ * @return {string} Completed code.
+ */
+Blockly.Micropython['controls_flow_statements'] = function (block) {
+    // Flow statements: continue, break.
+    switch (block.getFieldValue('FLOW')) {
+        case 'BREAK':
+            return 'break\n';
+        case 'CONTINUE':
+            return 'continue\n';
+    }
+    throw Error('Unknown flow statement.');
+};

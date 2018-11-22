@@ -23,32 +23,32 @@ Ardublockly.TOOLBOX_XML =
     '  </category>' +
     '  <sep></sep>' +
     '  <category id="catLoops" name="Loops">' +
-    //'    <block type="controls_repeat_ext">' +
-    //'      <value name="TIMES">' +
-    //'        <block type="math_number">' +
-    //'          <field name="NUM">10</field>' +
-    //'        </block>' +
-    //'      </value>' +
-    //'    </block>' +
+    '    <block type="controls_repeat_ext">' +
+    '      <value name="TIMES">' +
+    '        <block type="math_number">' +
+    '          <field name="NUM">10</field>' +
+    '        </block>' +
+    '      </value>' +
+    '    </block>' +
     '    <block type="controls_whileUntil"></block>' +
-    //'    <block type="controls_for">' +
-    //'      <value name="FROM">' +
-    //'        <block type="math_number">' +
-    //'          <field name="NUM">1</field>' +
-    //'        </block>' +
-    //'      </value>' +
-    //'      <value name="TO">' +
-    //'        <block type="math_number">' +
-    //'          <field name="NUM">10</field>' +
-    //'        </block>' +
-    //'      </value>' +
-    //'      <value name="BY">' +
-    //'        <block type="math_number">' +
-    //'          <field name="NUM">1</field>' +
-    //'        </block>' +
-    //'      </value>' +
-    //'    </block>' +
-    //'    <block type="controls_flow_statements"></block>' +
+    '    <block type="controls_for">' +
+    '      <value name="FROM">' +
+    '        <block type="math_number">' +
+    '          <field name="NUM">1</field>' +
+    '        </block>' +
+    '      </value>' +
+    '      <value name="TO">' +
+    '        <block type="math_number">' +
+    '          <field name="NUM">10</field>' +
+    '        </block>' +
+    '      </value>' +
+    '      <value name="BY">' +
+    '        <block type="math_number">' +
+    '          <field name="NUM">1</field>' +
+    '        </block>' +
+    '      </value>' +
+    '    </block>' +
+    '    <block type="controls_flow_statements"></block>' +
     '  </category>' +
     '  <sep></sep>' +
     '  <category id="catMath" name="Math">' +
