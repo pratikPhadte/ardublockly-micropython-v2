@@ -172,21 +172,21 @@ ul.side-nav li.side-menu-end {
     font-size: smaller;
     overflow: scroll;
     font-style: 0.2em !important;
-    min-height: 384px;
+    min-height: 354px;
 }
 
 .content_xml_large {
-    height: -moz-calc(100vh - 286px); /* Firefox  */
-    height: -webkit-calc(100vh - 286px); /* WebKit   */
-    height: -o-calc(100vh - 286px); /* Opera    */
-    height: calc(100vh - 286px); /* Standard */
+    height: -moz-calc(100vh - 572px); /* Firefox  */
+    height: -webkit-calc(100vh - 572px); /* WebKit   */
+    height: -o-calc(100vh - 572px); /* Opera    */
+    height: calc(100vh - 572px); /* Standard */
 }
 
 .content_xml_small {
-    height: -moz-calc(100vh - 446px); /* Firefox  */
-    height: -webkit-calc(100vh - 446px); /* WebKit   */
-    height: -o-calc(100vh - 446px); /* Opera    */
-    height: calc(100vh - 446px); /* Standard */
+    height: -moz-calc(100vh - 892px); /* Firefox  */
+    height: -webkit-calc(100vh - 892px); /* WebKit   */
+    height: -o-calc(100vh - 892px); /* Opera    */
+    height: calc(100vh - 892px); /* Standard */
 }
 
 /* The materialize framework changes height of the div to show or hide */
@@ -204,7 +204,7 @@ ul.side-nav li.side-menu-end {
     -webkit-user-select: text;
     -ms-user-select: text;
     user-select: text;
-    min-height: 388px;
+    min-height: 358px;
 }
 
 /* The materialize framework changes height of the div to show or hide */
@@ -222,35 +222,35 @@ ul.side-nav li.side-menu-end {
     -webkit-user-select: text;
     -ms-user-select: text;
     user-select: text;
-    min-height: 388px;
+    min-height: 358px;
 }
 
 .content_arduino_large {
-    height: -moz-calc(100vh - 280px); /* Firefox  */
-    height: -webkit-calc(100vh - 280px); /* WebKit   */
-    height: -o-calc(100vh - 280px); /* Opera    */
-    height: calc(100vh - 280px); /* Standard */
+    height: -moz-calc(100vh - 560px); /* Firefox  */
+    height: -webkit-calc(100vh - 560px); /* WebKit   */
+    height: -o-calc(100vh - 560px); /* Opera    */
+    height: calc(100vh - 560px); /* Standard */
 }
 
 .content_arduino_small {
-    height: -moz-calc(100vh - 440px); /* Firefox  */
-    height: -webkit-calc(100vh - 440px); /* WebKit   */
-    height: -o-calc(100vh - 440px); /* Opera    */
-    height: calc(100vh - 440px); /* Standard */
+    height: -moz-calc(100vh - 880px); /* Firefox  */
+    height: -webkit-calc(100vh - 880px); /* WebKit   */
+    height: -o-calc(100vh - 880px); /* Opera    */
+    height: calc(100vh - 880px); /* Standard */
 }
 
 .content_micropython_large {
-    height: -moz-calc(100vh - 280px); /* Firefox  */
-    height: -webkit-calc(100vh - 280px); /* WebKit   */
-    height: -o-calc(100vh - 280px); /* Opera    */
-    height: calc(100vh - 280px); /* Standard */
+    height: -moz-calc(100vh - 560px); /* Firefox  */
+    height: -webkit-calc(100vh - 560px); /* WebKit   */
+    height: -o-calc(100vh - 560px); /* Opera    */
+    height: calc(100vh - 560px); /* Standard */
 }
 
 .content_micropython_small {
-    height: -moz-calc(100vh - 440px); /* Firefox  */
-    height: -webkit-calc(100vh - 440px); /* WebKit   */
-    height: -o-calc(100vh - 440px); /* Opera    */
-    height: calc(100vh - 440px); /* Standard */
+    height: -moz-calc(100vh - 880px); /* Firefox  */
+    height: -webkit-calc(100vh - 880px); /* WebKit   */
+    height: -o-calc(100vh - 880px); /* Opera    */
+    height: calc(100vh - 880px); /* Standard */
 }
 
 /****************/

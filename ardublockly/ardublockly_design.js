@@ -462,6 +462,7 @@ Ardublockly.contentHeightToggle = function () {
     var outputHeader = document.getElementById('ide_output_collapsible_header');
     var blocks = document.getElementById('blocks_panel');
     var arduino = document.getElementById('content_arduino');
+    var micropython = document.getElementById('content_micropython');
     var xml = document.getElementById('content_xml');
 
     // Blockly doesn't resize with CSS3 transitions enabled, so do it manually
@@ -478,10 +479,12 @@ Ardublockly.contentHeightToggle = function () {
     if (!outputHeader.className.match('active') && $(window).height() > 800) {
         blocks.className = 'content height_transition blocks_panel_small';
         arduino.className = 'content height_transition content_arduino_small';
+        micropython.className = 'content height_transition content_micropython_small';
         xml.className = 'content height_transition content_xml_small';
     } else {
         blocks.className = 'content height_transition blocks_panel_large';
         arduino.className = 'content height_transition content_arduino_large';
+        micropython.className = 'content height_transition content_micropython_large';
         xml.className = 'content height_transition content_xml_large';
     }
 
