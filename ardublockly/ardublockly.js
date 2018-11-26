@@ -33,6 +33,9 @@ Ardublockly.init = function () {
     //        document.location.hostname)
     //}
 
+    Ardublockly.initREPL();
+    Ardublockly.setREPLUrl();
+
     //Load od blink sketch
 
     var blink_xml =
@@ -95,7 +98,11 @@ Ardublockly.init = function () {
             Ardublockly.getLocalStr('invalidXmlBody'),
             false);
     }
+
+
 };
+
+
 
 /** Binds functions to each of the buttons, nav links, and related. */
 Ardublockly.bindActionFunctions = function () {
@@ -103,6 +110,7 @@ Ardublockly.bindActionFunctions = function () {
     Ardublockly.bindClick_('button_load', Ardublockly.loadUserXmlFile);
     Ardublockly.bindClick_('button_save', Ardublockly.saveXmlFile);
     Ardublockly.bindClick_('button_delete', Ardublockly.discardAllBlocks);
+    Ardublockly.bindClick_('button_connect', Ardublockly.connectREPL);
 
     //// Side menu buttons, they also close the side menu
     //Ardublockly.bindClick_('menu_load', function () {
@@ -143,9 +151,9 @@ Ardublockly.bindActionFunctions = function () {
     //});
 
     // Floating buttons
-    //Ardublockly.bindClick_('button_ide_large', function () {
-    //    Ardublockly.ideButtonLargeAction();
-    //});
+    Ardublockly.bindClick_('button_ide_large', function () {
+        Ardublockly.ideButtonLargeAction();
+    });
     //Ardublockly.bindClick_('button_ide_middle', function () {
     //    Ardublockly.ideButtonMiddleAction();
     //});
@@ -222,8 +230,10 @@ Ardublockly.bindActionFunctions = function () {
 //    Ardublockly.sendCode();
 //};
 
-///** Function bound to the left IDE button, to be changed based on settings. */
+/** Function bound to the left IDE button, to be changed based on settings. */
 //Ardublockly.ideButtonLargeAction = Ardublockly.ideSendUpload;
+Ardublockly.ideButtonLargeAction = Ardublockly.uploadOverREPL;
+
 
 ///** Function bound to the middle IDE button, to be changed based on settings. */
 //Ardublockly.ideButtonMiddleAction = Ardublockly.ideSendVerify;
