@@ -23,6 +23,7 @@ goog.require('Blockly.Micropython');
  * @return {null} There is no code added to loop.
  */
 Blockly.Micropython['procedures_defreturn'] = function (block) {
+    
     var funcName = Blockly.Micropython.variableDB_.getName(
         block.getFieldValue('NAME'), Blockly.Procedures.NAME_TYPE);
     var branch = Blockly.Micropython.statementToCode(block, 'STACK');
@@ -60,11 +61,26 @@ Blockly.Micropython['procedures_defreturn'] = function (block) {
         returnType = block.getReturnType();
     }
 
+
+
+    //global declarations of variables
+    var declarations = '';
+    var varsWithTypes = Blockly.Micropython.StaticTyping.collectVarsWithTypes(Ardublockly.workspace);
+    // Set variable declarations with their Micropython type in the defines dictionary
+    for (var varName in varsWithTypes) {
+       declarations += '  global ' + varName + '\n';
+       //declarations += 'global ' + Blockly.Micropython.variableDB_.getName(varName, Blockly.Variables.NAME_TYPE) + '\n';
+    }
+
     // Construct code
     var code = 'def ' + funcName + '(' + args.join(', ') + '):\n' +
+        declarations +'\n' +
         branch + returnValue;
     code = Blockly.Micropython.scrub_(block, code);
-    Blockly.Micropython.userFunctions_[funcName] = code;
+    
+    
+    
+    Blockly.Micropython.userFunctions_[funcName] = code;   
     return null;
 };
 

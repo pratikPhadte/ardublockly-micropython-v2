@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\ardublockly",
+    "\\ardublockly\\materialize",
+    "\\ardublockly\\micropython-webrepl",
+    "\\ardublockly\\msg",
+    "\\blockly",
+    "\\blockly\\demos",
+    "\\blockly\\demos\\code",
+    "\\blockly\\generators",
+    "\\blockly\\generators\\micropython"
+  ],
+  "SelectedNode": "\\ardublockly\\micropython-webrepl\\term.js",
+  "PreviewInSolutionExplorer": false
+}

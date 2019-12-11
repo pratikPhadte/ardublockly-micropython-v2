@@ -2919,6 +2919,14 @@ Terminal.prototype.keyPress = function(ev) {
   return false;
 };
 
+// Terminal.prototype.sendString()
+// {
+  // key = 65;  
+    
+  // this.showCursor();
+  // this.handler(key);  
+// }
+
 Terminal.prototype.send = function(data) {
   var self = this;
 

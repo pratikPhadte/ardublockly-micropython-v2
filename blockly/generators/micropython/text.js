@@ -170,27 +170,27 @@ Blockly.Micropython['text_isEmpty'] = function (block) {
 //  return [argument0 + operator, Blockly.Arduino.ORDER_UNARY_POSTFIX];
 //};
 
-///**
-// * Code generator to print to the serial comm.
-// * Serial info: http://arduino.cc/en/Reference/Serial
-// * Arduino code: setup { Serial.begin(9600);     }
-// *               loop  { Serial.print(String(X)) }
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {string} Completed code.
-// */
-//Blockly.Arduino['text_print'] = function(block) {
-//  var serialId = Blockly.Arduino.Boards.selected.serial[0][1];
-//  var setupCode = serialId + '.begin(9600);';
-//  Blockly.Arduino.addSetup('serial_' + serialId, setupCode, false);
-//  var argument0 = Blockly.Arduino.valueToCode(block, 'TEXT',
-//      Blockly.Arduino.ORDER_NONE);
-//  if (argument0 == '') {
-//    argument0 = '""';
-//  } else {
-//    argument0 = 'String(' + argument0 + ')';
-//  }
-//  return serialId + '.print(' + argument0 + ');\n';
-//};
+// /**
+ // * Code generator to print to the serial comm.
+ // * Serial info: http://arduino.cc/en/Reference/Serial
+ // * Arduino code: setup { Serial.begin(9600);     }
+ // *               loop  { Serial.print(String(X)) }
+ // * @param {!Blockly.Block} block Block to generate the code from.
+ // * @return {string} Completed code.
+ // */
+// Blockly.Micropython['text_print'] = function(block) {
+  // //var serialId = Blockly.Arduino.Boards.selected.serial[0][1];
+  // //var setupCode = serialId + '.begin(9600);';
+  // //Blockly.Arduino.addSetup('serial_' + serialId, setupCode, false);
+  // var argument0 = Blockly.Micropython.valueToCode(block, 'TEXT',
+      // Blockly.Arduino.ORDER_NONE);
+  // if (argument0 == '') {
+      // argument0 = '""';
+  // } else {
+      // argument0 = 'str(' + argument0 + ')';
+  // }
+  // return 'print(' + argument0 + ');\n';
+// };
 
 ///**
 // * Code generator to prompt the user with a string (X) and request input.

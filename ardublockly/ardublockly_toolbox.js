@@ -106,7 +106,7 @@ Ardublockly.TOOLBOX_XML =
     '    <block type="text_length"></block>' +
     '    <block type="text_isEmpty"></block>' +
     //'    <!--block type="text_trim"></block Need to update block -->' +
-    //'    <!--block type="text_print"></block Part of the serial comms -->' +
+    '    <!--block type="text_print"></block Part of the serial comms -->' +
     '  </category>' +
     '  <sep></sep>' +
     '  <category id="catVariables" name="Variables">' +
@@ -219,9 +219,9 @@ Ardublockly.TOOLBOX_XML =
     //'    </block>' +
     //'  </category>' +
     //'  <sep></sep>' +
-    //'  <category id="catComms" name="Comms">' +
-    //'    <block type="serial_setup"></block>' +
-    //'    <block type="serial_print"></block>' +
+    '  <category id="catComms" name="Comms">' +
+    '    <block type="serial_setup"></block>' +
+    '    <block type="serial_print"></block>' +
     //'    <block type="text_prompt_ext">' +
     //'      <value name="TEXT">' +
     //'        <block type="text"></block>' +
@@ -230,5 +230,5 @@ Ardublockly.TOOLBOX_XML =
     //'    <block type="spi_setup"></block>' +
     //'    <block type="spi_transfer"></block>' +
     //'    <block type="spi_transfer_return"></block>' +
-    //'  </category>' +
+    '  </category>' +
     '</xml>';

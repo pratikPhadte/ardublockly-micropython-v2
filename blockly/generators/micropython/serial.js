@@ -17,43 +17,48 @@ goog.provide('Blockly.Micropython.serial');
 goog.require('Blockly.Micropython');
 
 
-///**
-// * Code generator of block for writing to the serial com.
-// * Arduino code: loop { Serial.print(X); }
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {string} Completed code.
-// */
-//Blockly.Micropython['serial_print'] = function (block) {
-//    var serialId = block.getFieldValue('SERIAL_ID');
-//    var content = Blockly.Micropython.valueToCode(
-//        block, 'CONTENT', Blockly.Micropython.ORDER_ATOMIC) || '0';
-//    var checkbox_name = (block.getFieldValue('NEW_LINE') == 'TRUE');
+/**
+ * Code generator of block for writing to the serial com.
+ * Arduino code: loop { Serial.print(X); }
+ * @param {!Blockly.Block} block Block to generate the code from.
+ * @return {string} Completed code.
+ */
+Blockly.Micropython['serial_print'] = function (block) {
+    //var serialId = block.getFieldValue('SERIAL_ID');
+    
+    var content = Blockly.Micropython.valueToCode(block, 'CONTENT', Blockly.Micropython.ORDER_ATOMIC) || '0';    
+    var checkbox_newline = (block.getFieldValue('NEW_LINE') == 'TRUE');
+    
+    // var serialpins = blockly.micropython.boards.selected.serialpins[serialid];
+    // for (var i = 0; i < serialpins.length; i++) {
+        // blockly.micropython.reservepin(block, serialpins[i][1],
+            // blockly.micropython.pintypes.serial, 'serial ' + serialpins[i][0]);
+    // }
+    
 
-//    var serialPins = Blockly.Micropython.Boards.selected.serialPins[serialId];
-//    for (var i = 0; i < serialPins.length; i++) {
-//        Blockly.Micropython.reservePin(block, serialPins[i][1],
-//            Blockly.Micropython.PinTypes.SERIAL, 'SERIAL ' + serialPins[i][0]);
-//    }
+    var code = '';
 
-//    if (checkbox_name) {
-//        var code = serialId + '.println(' + content + ');\n';
-//    } else {
-//        var code = serialId + '.print(' + content + ');\n';
-//    }
-//    return code;
-//};
+     if (checkbox_newline) {
+         code = 'print(' + content + ');\n';
+     } else {
+         code = 'print(' + content + ', end=\'\');\n';
+     }
+    
+    return code;
+    
+};
 
-///**
-// * Code generator for block for setting the serial com speed.
-// * Arduino code: setup{ Serial.begin(X); }
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {array} Completed code.
-// */
-//Blockly.Micropython['serial_setup'] = function (block) {
-//    var serialId = block.getFieldValue('SERIAL_ID');
-//    var serialSpeed = block.getFieldValue('SPEED');
-//    var serialSetupCode = serialId + '.begin(' + serialSpeed + ');';
-//    Blockly.Micropython.addSetup('serial_' + serialId, serialSetupCode, true);
-//    var code = '';
-//    return code;
-//};
+/**
+ * Code generator for block for setting the serial com speed.
+ * Arduino code: setup{ Serial.begin(X); }
+ * @param {!Blockly.Block} block Block to generate the code from.
+ * @return {array} Completed code.
+ */
+Blockly.Micropython['serial_setup'] = function (block) {
+    // var serialId = block.getFieldValue('SERIAL_ID');
+    // var serialSpeed = block.getFieldValue('SPEED');
+    // var serialSetupCode = serialId + '.begin(' + serialSpeed + ');';
+    // Blockly.Micropython.addSetup('serial_' + serialId, serialSetupCode, true);
+    var code = '';
+    return code;
+};

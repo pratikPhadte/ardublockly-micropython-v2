@@ -1,5 +1,41 @@
 # Ardublockly ESP8266/ESP32 Micropython Fork
-Server not ready yet. Run ardublockly/index.html and take a look on MicroPython Code tab!
+
+This project is about 
+1. Adding Micropython code generator to Ardublockly
+2. Adding Micropython WebREPL to Ardublockly 
+3. Uploading generated micropython code to ESP8266/ESP32 over the air 
+
+Goal is to make a web based Blockly programming enviroment for programming of ESPs OTA, without installation of any additional software to a PC
+
+## Proof of consept
+this project demonstrates uploading generated Micropython code to a ESP8266/ESP32
+
+To get the demo working do as follows:
+1. Get an ESP8266/ESP32 board 
+2. Flash it with the MicroPython firware using esptool.py https://docs.micropython.org/en/latest/esp8266/tutorial/intro.html
+3. open micropython terminal and setup webrepl by typing: import webrepl_setup
+4. follow instructions for setuping webrepl
+5. (Using uPyCraft IDE) Change internal boot.py file on the ESP8266/ESP32 as:
+
+boot.py
+
+    import network
+    import webrepl
+    ap = network.WLAN(network.AP_IF)
+    ap.active(True)
+    webrepl.start()
+
+6. reboot ESP8266/ESP32
+7. connect your PC to a ESP_XXXXXX Access point
+8. open ardublockly/index.html
+9. press connect on the top of the page
+10. click on Micropython WebREPL console down left
+11. it should ask you for a password you choosed during the webrepl setup
+12. after connection build your blockly code as you like, or leave it at the blink sketch as is
+13. and for a upload click on the big orange button
+14. if is everything connected it should give you a message, that blocks.py was sent
+15. reboot the ESP and the sketch should run 
+
 
 # Ardublockly
 Ardublockly is a visual programming editor for Arduino. It is based on Google's [Blockly][1], which has been forked to generate [Arduino][15] code.

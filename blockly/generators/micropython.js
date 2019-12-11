@@ -448,7 +448,7 @@ Blockly.Micropython.scrub_ = function (block, code) {
         // Collect comment for this block.
         var comment = block.getCommentText();
         if (comment) {
-            commentCode += this.prefixLines(comment, '// ') + '\n';
+            commentCode += this.prefixLines(comment, '# ') + '\n';
         }
         // Collect comments for all value arguments
         // Don't collect comments for nested statements

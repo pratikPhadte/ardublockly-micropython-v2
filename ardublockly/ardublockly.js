@@ -40,45 +40,143 @@ Ardublockly.init = function () {
 
     var blink_xml =
         '<xml xmlns="http://www.w3.org/1999/xhtml">' +
-        '  <block type="controls_whileUntil" id=";z@~=R{V)03:r.ppa2j^" x="82" y="149">' +
-        '    <field name="MODE">WHILE</field>' +
-        '    <value name="BOOL">' +
-        '      <block type="logic_boolean" id="cx,YcM+(%Q;ehV!}zUHx">' +
-        '        <field name="BOOL">TRUE</field>' +
-        '      </block>' +
-        '    </value>' +
-        '    <statement name="DO">' +
-        '      <block type="io_builtin_led" id=")=gtevqY=L3)_YCT!jTi">' +
-        '        <field name="BUILT_IN_LED">13</field>' +
-        '        <value name="STATE">' +
-        '          <block type="io_highlow" id=")CKAHa9Oo}9~tQbA)9IC">' +
-        '            <field name="STATE">HIGH</field>' +
+        '  <block type="serial_setup" id="=f#)[=_rZ)mi6drEoZt!" x="115" y="-144">' +
+        '    <field name="SERIAL_ID">Serial</field>' +
+        '    <field name="SPEED">115200</field>' +
+        '  </block>' +
+        '  <block type="arduino_functions" id="71U{BGpf-q]Y~PPbV.t:" x="125" y="4">' +
+        '    <statement name="SETUP_FUNC">' +
+        '      <block type="variables_set" id="[!P[Zx}e9vhb(WP:a,k{">' +
+        '        <field name="VAR">blink_delay</field>' +
+        '        <value name="VALUE">' +
+        '          <block type="math_number" id="vnNF9y*WUbeJxW1@?4Jy">' +
+        '            <field name="NUM">500</field>' +
         '          </block>' +
         '        </value>' +
         '        <next>' +
-        '          <block type="time_delay" id="u]*N!uyMk%Od7{p*)ql)">' +
-        '            <value name="DELAY_TIME_MILI">' +
-        '              <block type="math_number" id="Y?V=NQ,Vj.DbB},CxQlG">' +
-        '                <field name="NUM">1000</field>' +
+        '          <block type="variables_set" id="N^NoQa,L/G8RgSaW3EkO">' +
+        '            <field name="VAR">led_state</field>' +
+        '            <value name="VALUE">' +
+        '              <block type="math_number" id="}N{f*5(|)^zmTv1z_`+V">' +
+        '                <field name="NUM">0</field>' +
+        '              </block>' +
+        '            </value>' +
+        '          </block>' +
+        '        </next>' +
+        '      </block>' +
+        '    </statement>' +
+        '    <statement name="LOOP_FUNC">' +
+        '      <block type="controls_whileUntil" id=";z@~=R{V)03:r.ppa2j^">' +
+        '        <field name="MODE">WHILE</field>' +
+        '        <value name="BOOL">' +
+        '          <block type="logic_boolean" id="cx,YcM+(%Q;ehV!}zUHx">' +
+        '            <field name="BOOL">TRUE</field>' +
+        '          </block>' +
+        '        </value>' +
+        '        <statement name="DO">' +
+        '          <block type="procedures_callnoreturn" id="CI2;oQLlVTcK@mhKVgx{">' +
+        '            <mutation name="led_function"></mutation>' +
+        '            <next>' +
+        '              <block type="time_delay" id="u]*N!uyMk%Od7{p*)ql)">' +
+        '                <value name="DELAY_TIME_MILI">' +
+        '                  <block type="variables_get" id="Oj-2Cqo%ZS^s8WeCpcZ+">' +
+        '                    <field name="VAR">blink_delay</field>' +
+        '                  </block>' +
+        '                </value>' +
+        '              </block>' +
+        '            </next>' +
+        '          </block>' +
+        '        </statement>' +
+        '      </block>' +
+        '    </statement>' +
+        '  </block>' +
+        '  <block type="procedures_defnoreturn" id="-f~au.dYP;5U.8wR:#b[" x="127" y="354">' +
+        '    <field name="NAME">led_function</field>' +
+        '    <comment pinned="true" h="96" w="278">Rather complicated function to show the code generation in MicroPython Source Code Tab</comment>' +
+        '    <statement name="STACK">' +
+        '      <block type="variables_set" id="kmQ)~t17^In5r,vO%Ofj">' +
+        '        <field name="VAR">led_state</field>' +
+        '        <value name="VALUE">' +
+        '          <block type="math_arithmetic" id="tn%RK[7K%#F%(XDnpf,#">' +
+        '            <field name="OP">ADD</field>' +
+        '            <value name="A">' +
+        '              <block type="variables_get" id="WP?5A%)sJ+C4h`+c11]]">' +
+        '                <field name="VAR">led_state</field>' +
+        '              </block>' +
+        '            </value>' +
+        '            <value name="B">' +
+        '              <block type="math_number" id="?Wp%]N(,`Bw-J2Ej4Cmx">' +
+        '                <field name="NUM">1</field>' +
+        '              </block>' +
+        '            </value>' +
+        '          </block>' +
+        '        </value>' +
+        '        <next>' +
+        '          <block type="serial_print" id="juh:/K;xcnbBa,FH3cS#">' +
+        '            <field name="SERIAL_ID">Serial</field>' +
+        '            <field name="NEW_LINE">TRUE</field>' +
+        '            <value name="CONTENT">' +
+        '              <block type="text_join" id="z!gRKpLla#TF,bcW2dv#" inline="true">' +
+        '                <mutation items="2"></mutation>' +
+        '                <value name="ADD0">' +
+        '                  <block type="text" id="3}yD|9)39Qf#!]08R@Hs">' +
+        '                    <field name="TEXT">led_state = </field>' +
+        '                  </block>' +
+        '                </value>' +
+        '                <value name="ADD1">' +
+        '                  <block type="variables_get" id="3t8y2v0DnRd=N!tfL[l?">' +
+        '                    <field name="VAR">led_state</field>' +
+        '                  </block>' +
+        '                </value>' +
         '              </block>' +
         '            </value>' +
         '            <next>' +
-        '              <block type="io_builtin_led" id="I]=@~6@o(ESzUI^QVo*W">' +
-        '                <field name="BUILT_IN_LED">13</field>' +
-        '                <value name="STATE">' +
-        '                  <block type="io_highlow" id="]Lg6WPR^7H]r`cU7[3x*">' +
-        '                    <field name="STATE">LOW</field>' +
-        '                  </block>' +
-        '                </value>' +
-        '                <next>' +
-        '                  <block type="time_delay" id="HxiFT~IMcuBYw6EsW!}f">' +
-        '                    <value name="DELAY_TIME_MILI">' +
-        '                      <block type="math_number" id="MA+b|MQ~]4I:jvQ0^eR1">' +
-        '                        <field name="NUM">1000</field>' +
+        '              <block type="controls_if" id="XNNBi3RIZ[rnFEmf`jTR">' +
+        '                <mutation else="1"></mutation>' +
+        '                <value name="IF0">' +
+        '                  <block type="logic_compare" id="tH4{5)k6vJ?sRK}c-z#y">' +
+        '                    <field name="OP">EQ</field>' +
+        '                    <value name="A">' +
+        '                      <block type="math_modulo" id="Zq%zo?tWj@jMju|GSS^d">' +
+        '                        <value name="DIVIDEND">' +
+        '                          <block type="variables_get" id="3?Blkkv|xj*.rn29#Dln">' +
+        '                            <field name="VAR">led_state</field>' +
+        '                          </block>' +
+        '                        </value>' +
+        '                        <value name="DIVISOR">' +
+        '                          <block type="math_number" id="]J585Lp6N({spO=DF`n_">' +
+        '                            <field name="NUM">2</field>' +
+        '                          </block>' +
+        '                        </value>' +
+        '                      </block>' +
+        '                    </value>' +
+        '                    <value name="B">' +
+        '                      <block type="math_number" id="I,33Kk-Ghv7e7Kt6k:2w">' +
+        '                        <field name="NUM">0</field>' +
         '                      </block>' +
         '                    </value>' +
         '                  </block>' +
-        '                </next>' +
+        '                </value>' +
+        '                <statement name="DO0">' +
+        '                  <block type="io_builtin_led" id=")=gtevqY=L3)_YCT!jTi">' +
+        '                    <field name="BUILT_IN_LED">13</field>' +
+        '                    <value name="STATE">' +
+        '                      <block type="io_highlow" id=")CKAHa9Oo}9~tQbA)9IC">' +
+        '                        <field name="STATE">HIGH</field>' +
+        '                      </block>' +
+        '                    </value>' +
+        '                  </block>' +
+        '                </statement>' +
+        '                <statement name="ELSE">' +
+        '                  <block type="io_builtin_led" id="I]=@~6@o(ESzUI^QVo*W">' +
+        '                    <field name="BUILT_IN_LED">13</field>' +
+        '                    <value name="STATE">' +
+        '                      <block type="io_highlow" id="]Lg6WPR^7H]r`cU7[3x*">' +
+        '                        <field name="STATE">LOW</field>' +
+        '                      </block>' +
+        '                    </value>' +
+        '                  </block>' +
+        '                </statement>' +
         '              </block>' +
         '            </next>' +
         '          </block>' +

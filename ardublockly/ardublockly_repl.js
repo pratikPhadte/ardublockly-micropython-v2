@@ -7,13 +7,13 @@ Ardublockly.connectREPL = function () {
 };
 
 Ardublockly.setREPLUrl = function (url) {
-    var newurl = url || 'ws://192.168.43.173:8266/';
+    var newurl = url || 'ws://192.168.4.1:8266/';
     var input = $('#repl_url');
     input.val(newurl);
 };
 
 Ardublockly.uploadOverREPL = function () {
-    put_file_name = 'blocks.py';
+    put_file_name = 'main.py';
     var code = Ardublockly.generateMicropython();
     //code = code.replace(/\n/g, "\n\r");
     put_file_data = new Uint8Array(str2ab(code));

@@ -71,15 +71,17 @@ Blockly.Blocks['serial_print'] = {
   init: function() {
     this.setHelpUrl('http://www.arduino.cc/en/Serial/Print');
     this.setColour(Blockly.Blocks.serial.HUE);
-    this.appendDummyInput()
+    //this.appendDummyInput()
+    //    .appendField(new Blockly.FieldCheckbox('TRUE'), 'NEW_LINE')
+    //    .appendField(Blockly.Msg.ARD_SERIAL_PRINT_NEWLINE); 
+   this.appendValueInput('CONTENT')
         .appendField(new Blockly.FieldDropdown(
                 Blockly.Arduino.Boards.selected.serial), 'SERIAL_ID')
-        .appendField(Blockly.Msg.ARD_SERIAL_PRINT);
-    this.appendValueInput('CONTENT');
-    this.appendDummyInput()
+        .appendField(Blockly.Msg.ARD_SERIAL_PRINT)
         .appendField(new Blockly.FieldCheckbox('TRUE'), 'NEW_LINE')
-        .appendField(Blockly.Msg.ARD_SERIAL_PRINT_NEWLINE);
-    this.setInputsInline(true);
+        .appendField('ln');    
+        //.appendField(Blockly.Msg.ARD_SERIAL_PRINT_NEWLINE);           
+    this.setInputsInline(false);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setTooltip(Blockly.Msg.ARD_SERIAL_PRINT_TIP);
