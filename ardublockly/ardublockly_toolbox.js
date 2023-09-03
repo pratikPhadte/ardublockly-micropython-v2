@@ -123,11 +123,13 @@ Ardublockly.TOOLBOX_XML =
     '  <category id="catFunctions" name="Functions" custom="PROCEDURE"></category>' +
     '  <sep></sep>' +
     '  <category id="catInputOutput" name="Input/Output">' +
-    //'    <block type="io_digitalwrite">' +
-    //'      <value name="STATE">' +
-    //'        <block type="io_highlow"></block>' +
-    //'      </value>' +
-    //'    </block>' +
+    '    <block type="io_digitalwrite">' +
+    '      <value name="STATE">' +
+    '        <block type="io_highlow"></block>' +
+    '      </value>' +
+    '    </block>' +
+    
+   
     //'    <block type="io_digitalread"></block>' +
     '    <block type="io_builtin_led">' +
     '      <value name="STATE">' +
@@ -186,14 +188,14 @@ Ardublockly.TOOLBOX_XML =
     //'    <block type="io_notone"></block>' +
     //'  </category>' +
     //'  <sep></sep>' +
-    //'  <category id="catMotors" name="Motors">' +
-    //'    <block type="servo_write">' +
-    //'      <value name="SERVO_ANGLE">' +
-    //'        <block type="math_number">' +
-    //'          <field name="NUM">90</field>' +
-    //'        </block>' +
-    //'      </value>' +
-    //'    </block>' +
+    '  <category id="catMotors" name="Motors">' +
+    '    <block type="servo_write">' +
+    '      <value name="SERVO_ANGLE">' +
+    '        <block type="math_number">' +
+    '          <field name="NUM">90</field>' +
+    '        </block>' +
+    '      </value>' +
+    '    </block>' +
     //'    <block type="servo_read"></block>' +
     //'    <block type="stepper_config">' +
     //'      <field name="STEPPER_NUMBER_OF_PINS">2</field>' +
@@ -217,7 +219,7 @@ Ardublockly.TOOLBOX_XML =
     //'        </block>' +
     //'      </value>' +
     //'    </block>' +
-    //'  </category>' +
+    '  </category>' +
     //'  <sep></sep>' +
     '  <category id="catComms" name="Comms">' +
     '    <block type="serial_setup"></block>' +
