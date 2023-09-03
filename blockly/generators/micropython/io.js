@@ -13,6 +13,36 @@ goog.provide('Blockly.Micropython.IO');
 
 goog.require('Blockly.Micropython');
 
+/**
+ * Function for 'set pin' (X) to a state (Y).
+ * Arduino code: setup { pinMode(X, OUTPUT); }
+ *               loop  { digitalWrite(X, Y); }
+ *
+ * @param {!Blockly.Block} block Block to generate the code from.
+ * @return {string} Completed code.
+ */
+Blockly.Micropython['io_digitalwrite'] = function(block) {
+  var pin = block.getFieldValue('PIN');
+  var stateOutput = Blockly.Micropython.valueToCode(
+      block, 'STATE', Blockly.Micropython.ORDER_ATOMIC) || '0';
+
+      Blockly.Micropython.reservePin(
+        block, pin, Blockly.Micropython.PinTypes.OUTPUT, 'Set LED');
+  
+      var pinImportFromCode = 'from machine import Pin';
+      Blockly.Micropython.addImport('io_' + pin, pinImportFromCode);
+
+      //var pinSetupCode = 'pinMode(' + pin + ', OUTPUT);';
+  
+      var pinDefinitionCode = 'PIN = '+pin;
+      Blockly.Micropython.addDefinition('io_' + pin, pinDefinitionCode);
+  
+      var pinDeclarationCode = 'led'+pin+' = Pin(PIN, Pin.OUT)';
+      Blockly.Micropython.addDeclaration('io_' + pin, pinDeclarationCode, false);
+  
+      var code = 'led'+pin+'.value(' + stateOutput + ')\n';
+    return code;
+};
 
 ///**
 // * Function for 'set pin' (X) to a state (Y).
