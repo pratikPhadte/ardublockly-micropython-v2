@@ -86,9 +86,9 @@ Blockly.Arduino.Boards.profiles.uno = {
   name: 'Arduino Uno',
   description: 'Arduino Uno standard compatible board',
   compilerFlag: 'arduino:avr:uno',
-  analogPins: Blockly.Arduino.Boards.generateAnalogIo(0, 5),
-  digitalPins: Blockly.Arduino.Boards.generateDigitalIo(0, 13).concat(
-                   Blockly.Arduino.Boards.generateAnalogIo(0, 5)),
+  analogPins: Blockly.Arduino.Boards.generateAnalogIo(0, 8),
+  digitalPins: Blockly.Arduino.Boards.generateDigitalIo(0, 16).concat(
+                   Blockly.Arduino.Boards.generateAnalogIo(0, 8)),
   pwmPins: [['3', '3'], ['5', '5'], ['6', '6'], ['9', '9'], ['10', '10'],
             ['11', '11']],
   serial: [['serial', 'Serial']],
@@ -315,8 +315,145 @@ Blockly.Arduino.Boards.profiles.esp8266_wemos_d1 = {
               ['D4', 'D4'], ['D5', 'D5'], ['D6', 'D7'], ['D8', 'D8']]
 };
 
+Blockly.Arduino.Boards.profiles.esp32_dev = {
+  name: 'ESP32 Dev Module',
+  description: 'ESP32 Dev Module',
+  compilerFlag: 'esp32:esp32:esp32',
+  analogPins: [
+    ['VP', '36'], ['VN', '39'], ['D34', '34'], ['D35', '35'], ['D32', '32'], ['D33', '33'], 
+    ['D25', '25'], ['D26', '26'], ['D27', '27'], ['D14', '14'], ['D12', '12'], ['D13', '13'],
+    ['D15', '15'], ['D2', '2'], ['D4', '4']
+  ],
+  digitalPins: [
+    ['D2', '2'], ['TX0', '1'], ['RX0', '3'], ['D4', '4'], ['D5', '5'], ['D12', '12'], 
+    ['D13', '13'], ['D14', '14'], ['D15', '15'], ['RX2', '16'], ['TX2', '17'],
+    ['D18', '18'], ['D19', '19'], ['D21', '21'], ['D22', '22'],
+    ['D23', '23'], ['D25', '25'], ['D26', '26'], ['D27', '27'],
+    ['D32', '32'], ['D33', '33'], ['D34', '34'], ['D35', '35'],
+    ['VP', '36'], ['VN', '39']
+  ],
+  pwmPins: [
+    ['D2', '2'], ['TX0', '1'], ['RX0', '3'], ['D4', '4'], ['D5', '5'], ['D12', '12'], 
+    ['D13', '13'], ['D14', '14'], ['D15', '15'], ['RX2', '16'], ['TX2', '17'],
+    ['D18', '18'], ['D19', '19'], ['D21', '21'], ['D22', '22'],
+    ['D23', '23'], ['D25', '25'], ['D26', '26'], ['D27', '27'],
+    ['D32', '32'], ['D33', '33'], ['D34', '34'], ['D35', '35'],
+    ['VP', '36'], ['VN', '39']
+  ],
+  serial: [['serial', 'Serial']],
+  //  ['UART0', 'UART0'], ['UART2', 'UART2']
+  //],
+  serialPins: {
+    Serial: [['TX0', '1'], ['RX0', '3']],
+    Serial1: [['TX2', '17'], ['RX2', '16']]
+  },
+  serialSpeed:[['115200', '115200']],
+  spi: [
+    ['V-SPI', 'V-SPI'], ['H-SPI', 'H-SPI']
+  ],
+  spiPins: {
+    'V-SPI': [['MOSI-GPIO23', '23'], ['MISO-GPIO19', '19'], ['CLK-GPIO18', '18'], ['CS-GPIO5', '5']],
+    'H-SPI': [['MOSI-GPIO13', '13'], ['MISO-GPIO12', '12'], ['CLK-GPIO14', '14'], ['CS-GPIO15', '15']]
+  },
+  spiClockDivide: Blockly.Arduino.Boards.profiles.uno.spiClockDivide,
+  i2c: [
+    ['I2C', 'Wire']
+  ],
+  i2cPins: {
+    Wire: [['SDA-GPIO21', '21'], ['SCL-GPIO22', '22']]
+  },
+  i2cSpeed: Blockly.Arduino.Boards.profiles.uno.i2cSpeed,
+  builtinLed: [
+    ['BUILTIN_1', '2']
+  ],
+  interrupt: [
+    ['D2', '2'], ['TX0', '1'], ['RX0', '3'], ['D4', '4'], ['D5', '5'], ['D12', '12'], 
+    ['D13', '13'], ['D14', '14'], ['D15', '15'], ['RX2', '16'], ['TX2', '17'],
+    ['D18', '18'], ['D19', '19'], ['D21', '21'], ['D22', '22'],
+    ['D23', '23'], ['D25', '25'], ['D26', '26'], ['D27', '27'],
+    ['D32', '32'], ['D33', '33'], ['D34', '34'], ['D35', '35'],
+    ['VP', '36'], ['VN', '39']
+  ],
+  touch: [
+    ['GPIO0', '0'], ['GPIO2', '2'], ['GPIO4', '4'], ['GPIO12', '12'], ['GPIO13', '13'],
+    ['GPIO14', '14'], ['GPIO15', '15'], ['GPIO27', '27'], ['GPIO32', '32'], ['GPIO33', '33']
+  ],
+  rtcGPIOs: [
+    ['GPIO0', '0'], ['GPIO2', '2'], ['GPIO4', '4'], ['GPIO12', '12'], ['GPIO13', '13'],
+    ['GPIO14', '14'], ['GPIO15', '15'], ['GPIO25', '25'], ['GPIO26', '26'], ['GPIO27', '27'], ['GPIO32', '32'], ['GPIO33', '33']
+  ]
+};
+/*Blockly.Arduino.Boards.profiles.esp32_dev = {
+  name: 'ESP32 Dev Module',
+  description: 'ESP32 Dev Module',
+  compilerFlag: 'esp32:esp32:esp32',
+  analogPins: [
+    ['VP', '36'], ['VN', '39'], ['D34', '34'], ['D35', '35'], ['D32', '32'], ['D33', '33'], 
+    ['D25', '25'], ['D26', '26'], ['D27', '27'], ['D14', '14'], ['D12', '12'], ['D13', '13'],
+    ['D15', '15'], ['D2', '2'], ['D4', '4']
+  ],
+  digitalPins: [
+    ['D2', '2'], ['TX0', '1'], ['RX0', '3'] ['D4', '4'], ['D5', '5'], ['D12', '12'], 
+    ['D13', '13'], ['D14', '14'], ['D15', '15'], ['RX2', '16'], ['TX2', '17'],
+    ['D18', '18'], ['D19', '19'], ['D21', '21'], ['D22', '22'],
+    ['D23', '23'], ['D25', '25'], ['D26', '26'], ['D27', '27'],
+    ['D32', '32'], ['D33', '33'], ['D34', '34'], ['D35', '35'],
+    ['VP', '36'], ['VN', '39']
+  ],
+  pwmPins: [
+    ['D2', '2'], ['TX0', '1'], ['RX0', '3'] ['D4', '4'], ['D5', '5'], ['D12', '12'], 
+    ['D13', '13'], ['D14', '14'], ['D15', '15'], ['RX2', '16'], ['TX2', '17'],
+    ['D18', '18'], ['D19', '19'], ['D21', '21'], ['D22', '22'],
+    ['D23', '23'], ['D25', '25'], ['D26', '26'], ['D27', '27'],
+    ['D32', '32'], ['D33', '33'], ['D34', '34'], ['D35', '35'],
+    ['VP', '36'], ['VN', '39']
+  ],
+  serial: [['serial', 'Serial'],['serial1', 'Serial1']],
+  //  ['UART0', 'UART0'], ['UART2', 'UART2']
+  //],
+  serialPins: {
+    Serial: [['TX0', '1'], ['RX0', '3']],
+    Serial1: [['TX2', '17'], ['RX2', '16']]
+  },
+  serialSpeed:[['115200', '115200']],
+  spi: [
+    ['V-SPI', 'V-SPI'], ['H-SPI', 'H-SPI']
+  ],
+  spiPins: {
+    'V-SPI': [['MOSI-GPIO23', '23'], ['MISO-GPIO19', '19'], ['CLK-GPIO18', '18'], ['CS-GPIO5', '5']],
+    'H-SPI': [['MOSI-GPIO13', '13'], ['MISO-GPIO12', '12'], ['CLK-GPIO14', '14'], ['CS-GPIO15', '15']]
+  },
+  spiClockDivide: Blockly.Arduino.Boards.profiles.uno.spiClockDivide,
+  i2c: [
+    ['I2C', 'Wire']
+  ],
+  i2cPins: {
+    Wire: [['SDA-GPIO21', '21'], ['SCL-GPIO22', '22']]
+  },
+  i2cSpeed: Blockly.Arduino.Boards.profiles.uno.i2cSpeed,
+  builtinLed: [
+    ['BUILTIN_1', '2']
+  ],
+  interrupt: [
+    ['D2', '2'], ['TX0', '1'], ['RX0', '3'] ['D4', '4'], ['D5', '5'], ['D12', '12'], 
+    ['D13', '13'], ['D14', '14'], ['D15', '15'], ['RX2', '16'], ['TX2', '17'],
+    ['D18', '18'], ['D19', '19'], ['D21', '21'], ['D22', '22'],
+    ['D23', '23'], ['D25', '25'], ['D26', '26'], ['D27', '27'],
+    ['D32', '32'], ['D33', '33'], ['D34', '34'], ['D35', '35'],
+    ['VP', '36'], ['VN', '39']
+  ],
+  touch: [
+    ['GPIO0', '0'], ['GPIO2', '2'], ['GPIO4', '4'], ['GPIO12', '12'], ['GPIO13', '13'],
+    ['GPIO14', '14'], ['GPIO15', '15'], ['GPIO27', '27'], ['GPIO32', '32'], ['GPIO33', '33']
+  ],
+  rtcGPIOs: [
+    ['GPIO0', '0'], ['GPIO2', '2'], ['GPIO4', '4'], ['GPIO12', '12'], ['GPIO13', '13'],
+    ['GPIO14', '14'], ['GPIO15', '15'], ['GPIO25', '25'], ['GPIO26', '26'], ['GPIO27', '27'], ['GPIO32', '32'], ['GPIO33', '33']
+  ]
+}; 
+
 /** Set default profile to Arduino standard-compatible board */
-Blockly.Arduino.Boards.selected = Blockly.Arduino.Boards.profiles.uno;
+Blockly.Arduino.Boards.selected = Blockly.Arduino.Boards.profiles.esp32_dev;
 
 /**
  * Changes the Arduino board profile selected, which trigger a refresh of the
