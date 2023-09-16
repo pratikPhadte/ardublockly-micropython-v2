@@ -66,24 +66,27 @@ Blockly.Micropython['io_digitalwrite'] = function(block) {
 //  return code;
 //};
 
-///**
-// * Function for reading a digital pin (X).
-// * Arduino code: setup { pinMode(X, INPUT); }
-// *               loop  { digitalRead(X)     }
-// * @param {!Blockly.Block} block Block to generate the code from.
-// * @return {array} Completed code with order of operation.
-// */
-//Blockly.Micropython['io_digitalread'] = function(block) {
-//  var pin = block.getFieldValue('PIN');
-//  Blockly.Micropython.reservePin(
-//      block, pin, Blockly.Micropython.PinTypes.INPUT, 'Digital Read');
+/**
+* Function for reading a digital pin (X).
+* Arduino code: setup { pinMode(X, INPUT); }
+*               loop  { digitalRead(X)     }
+* @param {!Blockly.Block} block Block to generate the code from.
+* @return {array} Completed code with order of operation.
+*/
+Blockly.Micropython['io_digitalread'] = function(block) {
+ var pin = block.getFieldValue('PIN');
+ Blockly.Micropython.reservePin(
+     block, pin, Blockly.Micropython.PinTypes.INPUT, 'Digital Read');
+  
+  var pinImportFromCode = 'from machine import Pin';
+  Blockly.Micropython.addImport('io_' + pin, pinImportFromCode);    
 
-//  var pinSetupCode = 'pinMode(' + pin + ', INPUT);';
-//  Blockly.Micropython.addSetup('io_' + pin, pinSetupCode, false);
+  var pinDeclarationCode = 'read'+pin+' = Pin('+pin+', Pin.IN)';
+  Blockly.Micropython.addDeclaration('io_' + pin, pinDeclarationCode, false);
 
-//  var code = 'digitalRead(' + pin + ')';
-//  return [code, Blockly.Micropython.ORDER_ATOMIC];
-//};
+  var code = 'read'+pin+'.value('+')';
+  return [code, Blockly.Micropython.ORDER_ATOMIC];
+};
 
 /**
  * Function for setting the state (Y) of a built-in LED (X).
