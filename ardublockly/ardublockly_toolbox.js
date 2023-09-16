@@ -128,9 +128,11 @@ Ardublockly.TOOLBOX_XML =
     '        <block type="io_highlow"></block>' +
     '      </value>' +
     '    </block>' +
+
     
    
-    //'    <block type="io_digitalread"></block>' +
+    '    <block type="io_digitalread"></block>' +
+    
     '    <block type="io_builtin_led">' +
     '      <value name="STATE">' +
     '        <block type="io_highlow"></block>' +
